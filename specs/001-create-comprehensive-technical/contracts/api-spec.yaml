@@ -1,0 +1,1758 @@
+openapi: 3.0.3
+info:
+  title: FitBox Meal App API
+  description: Asian fusion meal delivery platform with subscription management
+  version: 0.1.0
+  contact:
+    name: FitBox Development Team
+    email: dev@fitboxmeals.com
+
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Development server
+  - url: https://fitboxmeals.com/api/v1
+    description: Production server
+
+paths:
+  # Authentication Endpoints
+  /auth/register:
+    post:
+      summary: Register new user account
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '409':
+          $ref: '#/components/responses/ConflictError'
+
+  /auth/login:
+    post:
+      summary: User login
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /auth/logout:
+    post:
+      summary: User logout
+      tags: [Authentication]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Logout successful
+
+  /auth/verify-email:
+    post:
+      summary: Verify email address
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailVerificationRequest'
+      responses:
+        '200':
+          description: Email verified successfully
+
+  /auth/reset-password:
+    post:
+      summary: Request password reset
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetRequest'
+      responses:
+        '200':
+          description: Password reset email sent
+
+  # User Profile Endpoints
+  /users/profile:
+    get:
+      summary: Get current user profile
+      tags: [User Profile]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User profile retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+
+    put:
+      summary: Update user profile
+      tags: [User Profile]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileRequest'
+      responses:
+        '200':
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+
+  /users/addresses:
+    get:
+      summary: Get user delivery addresses
+      tags: [User Profile]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Addresses retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Address'
+
+    post:
+      summary: Add new delivery address
+      tags: [User Profile]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAddressRequest'
+      responses:
+        '201':
+          description: Address created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+
+  /users/addresses/{addressId}:
+    put:
+      summary: Update delivery address
+      tags: [User Profile]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: addressId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAddressRequest'
+      responses:
+        '200':
+          description: Address updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+
+    delete:
+      summary: Delete delivery address
+      tags: [User Profile]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: addressId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Address deleted successfully
+
+  # Menu Endpoints
+  /menus/current:
+    get:
+      summary: Get current weekly menu
+      tags: [Menu]
+      responses:
+        '200':
+          description: Current menu retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeeklyMenu'
+
+  /menus/{weekStartDate}:
+    get:
+      summary: Get specific weekly menu
+      tags: [Menu]
+      parameters:
+        - name: weekStartDate
+          in: path
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Menu retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeeklyMenu'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /meals/{mealId}:
+    get:
+      summary: Get meal details
+      tags: [Menu]
+      parameters:
+        - name: mealId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Meal details retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Meal'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  # Delivery Zone Validation
+  /delivery-zones/validate:
+    post:
+      summary: Validate postal code for delivery
+      tags: [Delivery]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostalCodeValidationRequest'
+      responses:
+        '200':
+          description: Postal code validation result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeliveryZoneValidation'
+
+  # Subscription Management
+  /subscriptions:
+    get:
+      summary: Get user subscriptions
+      tags: [Subscriptions]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Subscriptions retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Subscription'
+
+    post:
+      summary: Create new subscription
+      tags: [Subscriptions]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSubscriptionRequest'
+      responses:
+        '201':
+          description: Subscription created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+
+  /subscriptions/{subscriptionId}:
+    get:
+      summary: Get subscription details
+      tags: [Subscriptions]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: subscriptionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Subscription details retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+
+    put:
+      summary: Update subscription
+      tags: [Subscriptions]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: subscriptionId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSubscriptionRequest'
+      responses:
+        '200':
+          description: Subscription updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+
+  /subscriptions/{subscriptionId}/pause:
+    post:
+      summary: Pause subscription
+      tags: [Subscriptions]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: subscriptionId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PauseSubscriptionRequest'
+      responses:
+        '200':
+          description: Subscription paused successfully
+
+  /subscriptions/{subscriptionId}/resume:
+    post:
+      summary: Resume subscription
+      tags: [Subscriptions]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: subscriptionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Subscription resumed successfully
+
+  /subscriptions/{subscriptionId}/cancel:
+    post:
+      summary: Cancel subscription
+      tags: [Subscriptions]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: subscriptionId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CancelSubscriptionRequest'
+      responses:
+        '200':
+          description: Subscription cancelled successfully
+
+  /subscriptions/{subscriptionId}/meals:
+    get:
+      summary: Get subscription meal selections
+      tags: [Subscriptions]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: subscriptionId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: weekStartDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Meal selections retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubscriptionItem'
+
+    put:
+      summary: Update subscription meal selections
+      tags: [Subscriptions]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: subscriptionId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMealSelectionsRequest'
+      responses:
+        '200':
+          description: Meal selections updated successfully
+
+  # Shopping Cart & Orders
+  /cart:
+    get:
+      summary: Get shopping cart
+      tags: [Cart & Orders]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Shopping cart retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShoppingCart'
+
+    post:
+      summary: Add item to cart
+      tags: [Cart & Orders]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddToCartRequest'
+      responses:
+        '200':
+          description: Item added to cart
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShoppingCart'
+
+    put:
+      summary: Update cart item
+      tags: [Cart & Orders]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCartRequest'
+      responses:
+        '200':
+          description: Cart updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShoppingCart'
+
+    delete:
+      summary: Clear shopping cart
+      tags: [Cart & Orders]
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: Cart cleared successfully
+
+  /orders:
+    get:
+      summary: Get user orders
+      tags: [Cart & Orders]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              [
+                PENDING,
+                CONFIRMED,
+                PREPARING,
+                OUT_FOR_DELIVERY,
+                DELIVERED,
+                CANCELLED,
+              ]
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Orders retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orders:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Order'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+
+    post:
+      summary: Create new order
+      tags: [Cart & Orders]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderRequest'
+      responses:
+        '201':
+          description: Order created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+
+  /orders/{orderId}:
+    get:
+      summary: Get order details
+      tags: [Cart & Orders]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Order details retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /orders/{orderId}/cancel:
+    post:
+      summary: Cancel order
+      tags: [Cart & Orders]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CancelOrderRequest'
+      responses:
+        '200':
+          description: Order cancelled successfully
+
+  # Payment Processing
+  /payments/create-intent:
+    post:
+      summary: Create Stripe payment intent
+      tags: [Payments]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePaymentIntentRequest'
+      responses:
+        '200':
+          description: Payment intent created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentIntentResponse'
+
+  /payments/webhooks/stripe:
+    post:
+      summary: Stripe webhook endpoint
+      tags: [Payments]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Webhook processed successfully
+
+  # Promo Codes
+  /promo-codes/validate:
+    post:
+      summary: Validate promo code
+      tags: [Promotions]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidatePromoCodeRequest'
+      responses:
+        '200':
+          description: Promo code validation result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromoCodeValidation'
+
+  # Gift Cards
+  /gift-cards:
+    post:
+      summary: Purchase gift card
+      tags: [Gift Cards]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PurchaseGiftCardRequest'
+      responses:
+        '201':
+          description: Gift card purchased successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GiftCard'
+
+  /gift-cards/validate:
+    post:
+      summary: Validate gift card
+      tags: [Gift Cards]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidateGiftCardRequest'
+      responses:
+        '200':
+          description: Gift card validation result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GiftCardValidation'
+
+  # Reviews
+  /meals/{mealId}/reviews:
+    get:
+      summary: Get meal reviews
+      tags: [Reviews]
+      parameters:
+        - name: mealId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Reviews retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Review'
+
+    post:
+      summary: Create meal review
+      tags: [Reviews]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: mealId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReviewRequest'
+      responses:
+        '201':
+          description: Review created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+
+  # Blog Content
+  /blog/posts:
+    get:
+      summary: Get blog posts
+      tags: [Blog]
+      parameters:
+        - name: category
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [ASIAN_HERITAGE, NUTRITION, RECIPES, CULTURE, HEALTH]
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Blog posts retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  posts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BlogPost'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+
+  /blog/posts/{slug}:
+    get:
+      summary: Get blog post by slug
+      tags: [Blog]
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Blog post retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogPost'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    # Authentication Schemas
+    RegisterRequest:
+      type: object
+      required:
+        - email
+        - password
+        - firstName
+        - lastName
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+        firstName:
+          type: string
+        lastName:
+          type: string
+        phone:
+          type: string
+        wechat:
+          type: string
+        emergencyPhone:
+          type: string
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+
+    AuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/UserProfile'
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        expiresIn:
+          type: integer
+
+    EmailVerificationRequest:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+
+    PasswordResetRequest:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          format: email
+
+    # User Profile Schemas
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        emailVerified:
+          type: boolean
+        firstName:
+          type: string
+        lastName:
+          type: string
+        phone:
+          type: string
+        wechat:
+          type: string
+        emergencyPhone:
+          type: string
+        role:
+          type: string
+          enum: [CUSTOMER, ADMIN, KITCHEN_STAFF]
+        preferences:
+          type: object
+        emailPreferences:
+          type: object
+        createdAt:
+          type: string
+          format: date-time
+
+    UpdateProfileRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        phone:
+          type: string
+        wechat:
+          type: string
+        emergencyPhone:
+          type: string
+        preferences:
+          type: object
+        emailPreferences:
+          type: object
+
+    Address:
+      type: object
+      properties:
+        id:
+          type: string
+        label:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        streetLine1:
+          type: string
+        streetLine2:
+          type: string
+        city:
+          type: string
+        province:
+          type: string
+        postalCode:
+          type: string
+        country:
+          type: string
+        isDefault:
+          type: boolean
+        deliveryZone:
+          type: string
+
+    CreateAddressRequest:
+      type: object
+      required:
+        - label
+        - firstName
+        - lastName
+        - streetLine1
+        - city
+        - province
+        - postalCode
+      properties:
+        label:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        streetLine1:
+          type: string
+        streetLine2:
+          type: string
+        city:
+          type: string
+        province:
+          type: string
+        postalCode:
+          type: string
+        country:
+          type: string
+          default: 'CA'
+        isDefault:
+          type: boolean
+
+    UpdateAddressRequest:
+      type: object
+      properties:
+        label:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        streetLine1:
+          type: string
+        streetLine2:
+          type: string
+        city:
+          type: string
+        province:
+          type: string
+        postalCode:
+          type: string
+        isDefault:
+          type: boolean
+
+    # Menu Schemas
+    Meal:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        nameZh:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+          enum: [RICE_BASED, NOODLE_SOUPS, PASTA_FUSION, PROTEIN_SIDES]
+        chefNotes:
+          type: string
+        imageUrl:
+          type: string
+        basePrice:
+          type: number
+          format: decimal
+        calories:
+          type: integer
+        protein:
+          type: number
+        carbs:
+          type: number
+        fat:
+          type: number
+        fiber:
+          type: number
+        sodium:
+          type: number
+        allergens:
+          type: array
+          items:
+            type: string
+        isVegetarian:
+          type: boolean
+        isVegan:
+          type: boolean
+        isGlutenFree:
+          type: boolean
+        preparationTime:
+          type: integer
+        averageRating:
+          type: number
+        reviewCount:
+          type: integer
+
+    WeeklyMenu:
+      type: object
+      properties:
+        id:
+          type: string
+        weekStartDate:
+          type: string
+          format: date
+        weekEndDate:
+          type: string
+          format: date
+        publishedAt:
+          type: string
+          format: date-time
+        isActive:
+          type: boolean
+        theme:
+          type: string
+        description:
+          type: string
+        menuItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/WeeklyMenuItem'
+
+    WeeklyMenuItem:
+      type: object
+      properties:
+        id:
+          type: string
+        meal:
+          $ref: '#/components/schemas/Meal'
+        isAvailable:
+          type: boolean
+        maxQuantity:
+          type: integer
+        currentStock:
+          type: integer
+        price:
+          type: number
+          format: decimal
+
+    # Delivery Schemas
+    PostalCodeValidationRequest:
+      type: object
+      required:
+        - postalCode
+      properties:
+        postalCode:
+          type: string
+
+    DeliveryZoneValidation:
+      type: object
+      properties:
+        isValid:
+          type: boolean
+        deliveryZone:
+          type: string
+        deliveryFee:
+          type: number
+          format: decimal
+        deliveryDays:
+          type: array
+          items:
+            type: string
+            enum: [SUNDAY, WEDNESDAY]
+
+    # Subscription Schemas
+    Subscription:
+      type: object
+      properties:
+        id:
+          type: string
+        bundleSize:
+          type: integer
+        deliveryDay:
+          type: string
+          enum: [SUNDAY, WEDNESDAY]
+        deliveryTimeSlot:
+          type: string
+        basePrice:
+          type: number
+          format: decimal
+        discountPercent:
+          type: number
+          format: decimal
+        nextBillingDate:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [ACTIVE, PAUSED, CANCELLED, EXPIRED]
+        pausedUntil:
+          type: string
+          format: date-time
+        mealSelectionDue:
+          type: string
+          format: date-time
+        hasSelectedMeals:
+          type: boolean
+
+    CreateSubscriptionRequest:
+      type: object
+      required:
+        - bundleSize
+        - deliveryDay
+        - deliveryAddressId
+      properties:
+        bundleSize:
+          type: integer
+          enum: [6, 8, 10, 12]
+        deliveryDay:
+          type: string
+          enum: [SUNDAY, WEDNESDAY]
+        deliveryTimeSlot:
+          type: string
+        deliveryAddressId:
+          type: string
+        mealSelections:
+          type: array
+          items:
+            type: object
+            properties:
+              mealId:
+                type: string
+              quantity:
+                type: integer
+
+    UpdateSubscriptionRequest:
+      type: object
+      properties:
+        bundleSize:
+          type: integer
+          enum: [6, 8, 10, 12]
+        deliveryDay:
+          type: string
+          enum: [SUNDAY, WEDNESDAY]
+        deliveryTimeSlot:
+          type: string
+        deliveryAddressId:
+          type: string
+
+    PauseSubscriptionRequest:
+      type: object
+      required:
+        - pauseUntil
+        - reason
+      properties:
+        pauseUntil:
+          type: string
+          format: date
+        reason:
+          type: string
+
+    CancelSubscriptionRequest:
+      type: object
+      required:
+        - reason
+      properties:
+        reason:
+          type: string
+        feedback:
+          type: string
+
+    SubscriptionItem:
+      type: object
+      properties:
+        id:
+          type: string
+        meal:
+          $ref: '#/components/schemas/Meal'
+        quantity:
+          type: integer
+        weekStartDate:
+          type: string
+          format: date
+
+    UpdateMealSelectionsRequest:
+      type: object
+      required:
+        - weekStartDate
+        - mealSelections
+      properties:
+        weekStartDate:
+          type: string
+          format: date
+        mealSelections:
+          type: array
+          items:
+            type: object
+            properties:
+              mealId:
+                type: string
+              quantity:
+                type: integer
+
+    # Shopping Cart & Order Schemas
+    ShoppingCart:
+      type: object
+      properties:
+        id:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItem'
+        subtotal:
+          type: number
+          format: decimal
+        deliveryFee:
+          type: number
+          format: decimal
+        taxAmount:
+          type: number
+          format: decimal
+        discountAmount:
+          type: number
+          format: decimal
+        totalAmount:
+          type: number
+          format: decimal
+        promoCode:
+          type: string
+
+    CartItem:
+      type: object
+      properties:
+        id:
+          type: string
+        meal:
+          $ref: '#/components/schemas/Meal'
+        quantity:
+          type: integer
+        unitPrice:
+          type: number
+          format: decimal
+        totalPrice:
+          type: number
+          format: decimal
+
+    AddToCartRequest:
+      type: object
+      required:
+        - mealId
+        - quantity
+      properties:
+        mealId:
+          type: string
+        quantity:
+          type: integer
+
+    UpdateCartRequest:
+      type: object
+      required:
+        - cartItemId
+        - quantity
+      properties:
+        cartItemId:
+          type: string
+        quantity:
+          type: integer
+
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+        orderNumber:
+          type: string
+        orderType:
+          type: string
+          enum: [ONE_TIME, SUBSCRIPTION]
+        status:
+          type: string
+          enum:
+            [
+              PENDING,
+              CONFIRMED,
+              PREPARING,
+              OUT_FOR_DELIVERY,
+              DELIVERED,
+              CANCELLED,
+            ]
+        paymentStatus:
+          type: string
+          enum: [PENDING, PAID, FAILED, REFUNDED, PARTIALLY_REFUNDED]
+        subtotal:
+          type: number
+          format: decimal
+        discountAmount:
+          type: number
+          format: decimal
+        deliveryFee:
+          type: number
+          format: decimal
+        taxAmount:
+          type: number
+          format: decimal
+        totalAmount:
+          type: number
+          format: decimal
+        deliveryAddress:
+          $ref: '#/components/schemas/Address'
+        deliveryDay:
+          type: string
+          enum: [SUNDAY, WEDNESDAY]
+        deliveryWindow:
+          type: string
+        deliveryDate:
+          type: string
+          format: date
+        specialInstructions:
+          type: string
+        needsInsulatedBag:
+          type: boolean
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+        createdAt:
+          type: string
+          format: date-time
+        confirmedAt:
+          type: string
+          format: date-time
+        deliveredAt:
+          type: string
+          format: date-time
+
+    OrderItem:
+      type: object
+      properties:
+        id:
+          type: string
+        meal:
+          $ref: '#/components/schemas/Meal'
+        quantity:
+          type: integer
+        unitPrice:
+          type: number
+          format: decimal
+        totalPrice:
+          type: number
+          format: decimal
+
+    CreateOrderRequest:
+      type: object
+      required:
+        - deliveryAddressId
+        - deliveryDay
+        - deliveryWindow
+        - deliveryDate
+      properties:
+        subscriptionId:
+          type: string
+        deliveryAddressId:
+          type: string
+        deliveryDay:
+          type: string
+          enum: [SUNDAY, WEDNESDAY]
+        deliveryWindow:
+          type: string
+        deliveryDate:
+          type: string
+          format: date
+        specialInstructions:
+          type: string
+        promoCode:
+          type: string
+        giftCardCode:
+          type: string
+
+    CancelOrderRequest:
+      type: object
+      required:
+        - reason
+      properties:
+        reason:
+          type: string
+
+    # Payment Schemas
+    CreatePaymentIntentRequest:
+      type: object
+      required:
+        - orderId
+        - amount
+      properties:
+        orderId:
+          type: string
+        amount:
+          type: number
+          format: decimal
+        currency:
+          type: string
+          default: 'CAD'
+        paymentMethodId:
+          type: string
+
+    PaymentIntentResponse:
+      type: object
+      properties:
+        clientSecret:
+          type: string
+        paymentIntentId:
+          type: string
+
+    # Promotion Schemas
+    ValidatePromoCodeRequest:
+      type: object
+      required:
+        - code
+        - orderAmount
+      properties:
+        code:
+          type: string
+        orderAmount:
+          type: number
+          format: decimal
+        isSubscription:
+          type: boolean
+
+    PromoCodeValidation:
+      type: object
+      properties:
+        isValid:
+          type: boolean
+        discountAmount:
+          type: number
+          format: decimal
+        discountType:
+          type: string
+          enum: [PERCENTAGE, FIXED_AMOUNT]
+        description:
+          type: string
+        error:
+          type: string
+
+    # Gift Card Schemas
+    PurchaseGiftCardRequest:
+      type: object
+      required:
+        - amount
+        - recipientEmail
+      properties:
+        amount:
+          type: number
+          format: decimal
+        recipientEmail:
+          type: string
+          format: email
+        recipientName:
+          type: string
+        personalMessage:
+          type: string
+
+    GiftCard:
+      type: object
+      properties:
+        id:
+          type: string
+        code:
+          type: string
+        initialValue:
+          type: number
+          format: decimal
+        currentValue:
+          type: number
+          format: decimal
+        status:
+          type: string
+          enum: [ACTIVE, REDEEMED, EXPIRED, CANCELLED]
+
+    ValidateGiftCardRequest:
+      type: object
+      required:
+        - code
+      properties:
+        code:
+          type: string
+
+    GiftCardValidation:
+      type: object
+      properties:
+        isValid:
+          type: boolean
+        currentValue:
+          type: number
+          format: decimal
+        error:
+          type: string
+
+    # Review Schemas
+    Review:
+      type: object
+      properties:
+        id:
+          type: string
+        user:
+          type: object
+          properties:
+            firstName:
+              type: string
+            lastName:
+              type: string
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        title:
+          type: string
+        comment:
+          type: string
+        isApproved:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+
+    CreateReviewRequest:
+      type: object
+      required:
+        - rating
+      properties:
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        title:
+          type: string
+        comment:
+          type: string
+
+    # Blog Schemas
+    BlogPost:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        slug:
+          type: string
+        excerpt:
+          type: string
+        content:
+          type: string
+        featuredImage:
+          type: string
+        category:
+          type: string
+          enum: [ASIAN_HERITAGE, NUTRITION, RECIPES, CULTURE, HEALTH]
+        tags:
+          type: array
+          items:
+            type: string
+        author:
+          type: object
+          properties:
+            firstName:
+              type: string
+            lastName:
+              type: string
+        publishedAt:
+          type: string
+          format: date-time
+
+    # Utility Schemas
+    Pagination:
+      type: object
+      properties:
+        total:
+          type: integer
+        limit:
+          type: integer
+        offset:
+          type: integer
+        hasNext:
+          type: boolean
+        hasPrevious:
+          type: boolean
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+
+  responses:
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    UnauthorizedError:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    ForbiddenError:
+      description: Insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    NotFoundError:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    ConflictError:
+      description: Resource conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+tags:
+  - name: Authentication
+    description: User authentication and session management
+  - name: User Profile
+    description: User profile and address management
+  - name: Menu
+    description: Weekly menu and meal information
+  - name: Delivery
+    description: Delivery zone validation and management
+  - name: Subscriptions
+    description: Subscription management and meal selection
+  - name: Cart & Orders
+    description: Shopping cart and order processing
+  - name: Payments
+    description: Payment processing and Stripe integration
+  - name: Promotions
+    description: Promo code validation and management
+  - name: Gift Cards
+    description: Gift card purchase and redemption
+  - name: Reviews
+    description: Customer reviews and ratings
+  - name: Blog
+    description: Content management and blog posts
