@@ -6,9 +6,9 @@
 
 ## Implementation Strategy
 
-**MVP PHASE 1 (Weeks 1-2)**: Focus on 6 core entities for basic ordering system
-**PHASE 2 (Weeks 3-4)**: Add subscription management and automation features  
-**PHASE 3 (Weeks 5-8)**: Add community features and advanced functionality
+**MVP PHASE 1 (Weeks 1-3)**: Focus on 6 core entities for basic ordering system
+**PHASE 2 (Weeks 4-5)**: Add subscription management and automation features  
+**PHASE 3 (Weeks 6-8)**: Add community features and advanced functionality
 
 ---
 
@@ -926,7 +926,7 @@ PAID → REFUNDED | PARTIALLY_REFUNDED
 
 ## 📋 IMPLEMENTATION SUMMARY BY PHASE
 
-### 🔴 MVP PHASE 1 ENTITIES (Weeks 1-2) - IMPLEMENT FIRST
+### 🔴 MVP PHASE 1 ENTITIES (Weeks 1-3) - IMPLEMENT FIRST
 
 **Core 6 entities for basic one-time ordering:**
 
@@ -947,7 +947,7 @@ PAID → REFUNDED | PARTIALLY_REFUNDED
 - ✅ Stripe payment processing
 - ✅ Order confirmation system
 
-### 🟡 PHASE 2 ENTITIES (Weeks 3-4) - DEFERRED
+### 🟡 PHASE 2 ENTITIES (Weeks 4-5) - DEFERRED
 
 **Subscription system and automation:**
 
@@ -962,7 +962,7 @@ PAID → REFUNDED | PARTIALLY_REFUNDED
 - 🟡 5% subscription discount
 - 🟡 Subscription pause/skip functionality
 
-### 🟢 PHASE 3 ENTITIES (Weeks 5-8) - DEFERRED
+### 🟢 PHASE 3 ENTITIES (Weeks 6-8) - DEFERRED
 
 **Community and growth features:**
 

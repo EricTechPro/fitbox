@@ -79,9 +79,9 @@ As a busy professional in Vancouver who appreciates Asian cuisine, I want to sub
 
 **PRIORITY LEGEND**:
 
-- 🔴 **MVP PHASE 1** (Weeks 1-2): Essential for immediate launch
-- 🟡 **PHASE 2** (Weeks 3-4): Important but can be deferred
-- 🟢 **PHASE 3** (Weeks 5-8): Growth features for later
+- 🔴 **MVP PHASE 1** (Weeks 1-3): Essential for immediate launch
+- 🟡 **PHASE 2** (Weeks 4-5): Important but can be deferred
+- 🟢 **PHASE 3** (Weeks 6-8): Growth features for later
 
 #### User Management & Authentication
 
@@ -331,7 +331,7 @@ As a busy professional in Vancouver who appreciates Asian cuisine, I want to sub
 
 ## Implementation Phases (Business View)
 
-### Phase 1: MVP Core (Weeks 1-2) - IMMEDIATE PRIORITY
+### Phase 1: MVP Core (Weeks 1-3) - IMMEDIATE PRIORITY
 
 **Goal**: Launch basic ordering capability for immediate business needs
 
@@ -354,7 +354,7 @@ As a busy professional in Vancouver who appreciates Asian cuisine, I want to sub
 - Loyalty points system
 - Review and rating system
 
-### Phase 2: Subscription & Automation (Weeks 3-4)
+### Phase 2: Subscription & Automation (Weeks 4-5)
 
 **Goal**: Add subscription model and automate operations
 
@@ -368,7 +368,7 @@ As a busy professional in Vancouver who appreciates Asian cuisine, I want to sub
 - Bundle size options (6, 8, 10, 12 meals)
 - 5% subscription discount
 
-### Phase 3: Growth & Community (Weeks 5-8)
+### Phase 3: Growth & Community (Weeks 6-8)
 
 **Goal**: Drive growth through community and engagement
 

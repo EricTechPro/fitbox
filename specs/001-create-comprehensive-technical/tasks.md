@@ -29,13 +29,13 @@
 
 ## Task Priority Legend
 
-- **🔴 MVP PHASE 1** (Weeks 1-2): Essential for immediate launch - **EXECUTE FIRST**
-- **🟡 PHASE 2** (Weeks 3-4): Important subscription features - **DEFER TO WEEK 3**
-- **🟢 PHASE 3** (Weeks 5-8): Growth features - **DEFER TO WEEK 5**
+- **🔴 MVP PHASE 1** (Weeks 1-3): Essential for immediate launch - **EXECUTE FIRST**
+- **🟡 PHASE 2** (Weeks 4-5): Important subscription features - **DEFER TO WEEK 4**
+- **🟢 PHASE 3** (Weeks 6-8): Growth features - **DEFER TO WEEK 6**
 
 ## CRITICAL: Execute in Order - No Parallel Processing
 
-## 🔴 MVP PHASE 1: Essential Foundation (Week 1)
+## 🔴 MVP PHASE 1: Essential Foundation (Weeks 1-3)
 
 ### Setup & Configuration (Days 1-2)
 
@@ -106,17 +106,17 @@
   - Path: `src/app/api/auth/[...nextauth]/route.ts`, `src/lib/auth.ts`
   - NextAuth.js configuration, JWT strategy, session management
 
-- [ ] **T016** 🔴 Contract test for authentication endpoints
+- [ ] **T016** 🔴 Contract test for NextAuth.js authentication
   - Path: `tests/contract/auth-api.test.ts`
-  - Test registration, login flows (no email verification for MVP Phase 1)
+  - Test NextAuth.js email provider, session management, authentication flows
 
-- [ ] **T017** 🔴 User registration API route (simplified)
-  - Path: `src/app/api/auth/register/route.ts`
-  - User creation, password hashing (no email verification for MVP Phase 1)
+- [ ] **T017** 🔴 NextAuth.js provider configuration and setup
+  - Path: `src/lib/auth-config.ts`, NextAuth.js providers
+  - Configure email provider, credentials provider, database adapter integration
 
-- [ ] **T018** 🟡 Email verification service integration
-  - Path: `src/lib/email.ts`, `src/app/api/auth/verify-email/route.ts`
-  - **DEFERRED**: Email sending with Resend/SendGrid for Phase 2
+- [ ] **T018** 🔴 NextAuth.js email verification setup
+  - Path: `src/lib/email-provider.ts`, email configuration
+  - **INCLUDED IN MVP**: Basic email verification using NextAuth.js email provider
 
 - [ ] **T019** 🔴 Authentication UI components and pages
   - Path: `src/app/(auth)/login/page.tsx`, `src/app/(auth)/register/page.tsx`
@@ -148,39 +148,51 @@
   - Path: `src/app/api/orders/route.ts`
   - **SIMPLIFIED**: One-time order creation, status updates (no subscription complexity)
 
-## 🔴 MVP PHASE 1: Essential UI (Week 2)
+## 🔴 MVP PHASE 1: Essential UI (Week 3)
 
 ### Core Frontend Components (Days 9-12)
 
 - [ ] **T026** 🔴 Base layout and navigation components
   - Path: `src/components/layout/`, `src/app/layout.tsx`
   - Responsive header, mobile navigation, footer
+  - **MOBILE TESTING**: 320px (mobile), 768px (tablet), 1024px (desktop) breakpoints
 
 - [ ] **T027** 🔴 Menu display components with bilingual support
   - Path: `src/components/menu/`
   - Menu grid, meal cards, category filters, bilingual text display
+  - **MOBILE TESTING**: Touch-friendly meal cards, swipe gestures, responsive grid layout
 
 - [ ] **T028** 🔴 Shopping cart components
   - Path: `src/components/cart/`
   - Cart sidebar, item management, basic checkout flow
+  - **MOBILE TESTING**: Mobile cart drawer, touch targets ≥44px, quantity controls
 
 - [ ] **T029** 🔴 Payment components with Stripe Elements
   - Path: `src/components/payment/`
   - Payment form, card input, payment confirmation (one-time payments only)
+  - **MOBILE TESTING**: Mobile-optimized payment forms, secure input fields
 
 - [ ] **T030** 🔴 Homepage and menu browsing pages
   - Path: `src/app/page.tsx`, `src/app/menu/page.tsx`
   - Landing page, postal code check, menu display, meal selection
+  - **MOBILE TESTING**: Mobile-first layout, <3s load time on 3G, cross-device testing
 
-### MVP Phase 1 Launch Preparation (Days 13-14)
+### MVP Phase 1 Launch Preparation (Days 19-21)
 
 - [ ] **T031** 🔴 Basic integration test for guest checkout
   - Path: `tests/integration/guest-checkout.test.ts`
   - Menu browsing → cart → guest checkout → payment → confirmation
+  - **MOBILE TESTING**: Test complete flow on mobile viewport, touch interactions
 
-- [ ] **T032** 🔴 Basic admin order management
-  - Path: `src/app/admin/orders/page.tsx`
-  - **SIMPLIFIED**: View orders, basic order processing, manual status updates
+- [ ] **T032** 🔴 Admin order management dashboard
+  - Path: `src/app/admin/orders/page.tsx`, `src/components/admin/`
+  - **REQUIRED ADMIN CAPABILITIES**:
+    - View all orders with status, customer info, delivery details
+    - Update order status (confirmed, preparing, out-for-delivery, delivered)
+    - Access customer contact info (phone/email) for delivery issues
+    - Generate daily packing lists grouped by delivery day
+    - Manual meal availability toggle (inventory override)
+    - Basic analytics: daily order count, revenue, popular meals
 
 - [ ] **T033** 🔴 Local deployment and testing
   - Path: Local environment
@@ -188,7 +200,7 @@
 
 ---
 
-## 📋 MVP PHASE 1 SUMMARY (33 Tasks → 2 Weeks)
+## 📋 MVP PHASE 1 SUMMARY (33 Tasks → 3 Weeks)
 
 **GOAL**: Launch basic ordering capability for immediate business needs
 
@@ -210,11 +222,11 @@
 - ❌ Blog and content management
 - ❌ Loyalty points system
 
-**EXECUTION**: Sequential implementation, 33 tasks over 14 days
+**EXECUTION**: Sequential implementation, 33 tasks over 21 days
 
 ---
 
-## 🟡 PHASE 2: Subscription & Automation (Weeks 3-4) - DEFERRED
+## 🟡 PHASE 2: Subscription & Automation (Weeks 4-5) - DEFERRED
 
 The following tasks are moved to Phase 2:
 
