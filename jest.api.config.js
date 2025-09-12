@@ -8,7 +8,7 @@ module.exports = {
     'src/lib/**/*.{js,ts}',
     '!src/**/*.d.ts',
   ],
-  moduleNameMapping: {
+  moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
   transform: {

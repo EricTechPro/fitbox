@@ -1,5 +1,9 @@
 // API test setup for contract tests
 // This setup runs before each API test
+const { config } = require('dotenv')
+
+// Load test environment variables
+config({ path: '.env.test' })
 
 beforeAll(async () => {
   // Set up test database connection
