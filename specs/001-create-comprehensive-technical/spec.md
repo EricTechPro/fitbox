@@ -39,7 +39,7 @@
 
 ### Primary User Story
 
-As a busy professional in Toronto who appreciates Asian cuisine, I want to subscribe to a weekly meal delivery service that provides healthy, authentic Asian fusion meals, so I can enjoy convenient, nutritious dining without the hassle of cooking or compromising on taste and cultural authenticity.
+As a busy professional in Vancouver who appreciates Asian cuisine, I want to subscribe to a weekly meal delivery service that provides healthy, authentic Asian fusion meals, so I can enjoy convenient, nutritious dining without the hassle of cooking or compromising on taste and cultural authenticity.
 
 ### Acceptance Scenarios
 
@@ -53,8 +53,8 @@ As a busy professional in Toronto who appreciates Asian cuisine, I want to subsc
 #### Subscriber Scenarios
 
 1. **Given** an active subscriber, **When** Thursday 5:00 PM arrives, **Then** they receive an email about the new weekly menu
-2. **Given** a subscriber viewing next week's menu, **When** they update their meal selection before Wednesday 11:59 PM, **Then** their choices are saved for delivery
-3. **Given** a subscriber wanting to skip a week, **When** they select skip before Wednesday cutoff, **Then** they are not charged or delivered that week
+2. **Given** a subscriber viewing next week's menu, **When** they update their meal selection before Tuesday 6:00 PM (for Sunday delivery) or Saturday 6:00 PM (for Wednesday delivery), **Then** their choices are saved for delivery
+3. **Given** a subscriber wanting to skip a week, **When** they select skip before Tuesday 6:00 PM (for Sunday delivery) or Saturday 6:00 PM (for Wednesday delivery), **Then** they are not charged or delivered that week
 4. **Given** a subscriber with 5+ meals ordered, **When** delivery arrives, **Then** meals come in insulated bags
 
 #### Admin Scenarios
@@ -67,7 +67,7 @@ As a busy professional in Toronto who appreciates Asian cuisine, I want to subsc
 
 - **Outside delivery zone**: Input validation prevents users from proceeding to checkout if address is outside delivery zone
 - **Payment failures for subscriptions**: System retries 3 times with 3-hour intervals, then cancels order and sends payment retry link
-- **No meal selection before cutoff**: First-time subscribers must select meals to complete subscription; existing subscriber logic requires business refinement
+- **No meal selection before cutoff**: First-time subscribers must select meals to complete subscription; existing subscribers who miss the deadline receive system default recommendations of 3 meals
 - **Delivery/quality complaints**: Customers use provided info email address to contact customer service
 - **Inventory stock-outs**: 200 meal daily limit prevents stock-outs; customer service contacts customers via email/WeChat/phone if issues arise
 
@@ -85,10 +85,12 @@ As a busy professional in Toronto who appreciates Asian cuisine, I want to subsc
 - **FR-004**: System MUST support guest checkout for one-time purchases
 - **FR-005**: System MUST maintain user profiles with delivery addresses, payment methods, email, WeChat, and emergency phone number
 - **FR-006**: System MUST allow user-defined passwords without specific complexity requirements
+- **FR-212**: System MUST limit new customer registrations to 10 per week during beta testing phase
+- **FR-213**: System MUST implement waitlist functionality when beta testing limits are reached
 
 #### Menu & Product Management
 
-- **FR-010**: System MUST display a rotating weekly menu that updates every Thursday at 5:00 PM
+- **FR-010**: System MUST display a rotating weekly menu that updates every Thursday at 5:00 PM with notifications sent Tuesday/Saturday at 12:00 PM
 - **FR-011**: System MUST categorize meals into: Rice-based, Noodle soups, Pasta fusion, Protein & sides
 - **FR-012**: System MUST display bilingual menu items (English and Chinese characters)
 - **FR-013**: System MUST show nutritional information for each meal
@@ -96,22 +98,28 @@ As a busy professional in Toronto who appreciates Asian cuisine, I want to subsc
 - **FR-015**: System MUST indicate which meals are currently available
 - **FR-016**: System MUST show meal pricing ($17.99-$18.99 per meal)
 - **FR-017**: System MUST display chef information and meal descriptions
+- **FR-018**: System MUST support add-on items including yogurt bowls and trendy sandwiches
+- **FR-019**: System MUST allow customers to add add-on items to their meal bundles during checkout
+- **FR-210**: System MUST offer 6 different meal options per week with plans to expand selection
+- **FR-211**: System MUST support half-week options with 3 meal selections
 
 #### Subscription Management
 
 - **FR-020**: System MUST offer weekly subscription bundles with Sunday or Wednesday delivery
 - **FR-021**: System MUST provide bundle sizes of 6, 8, 10, and 12 meals
 - **FR-022**: System MUST apply 5% discount to subscription orders vs one-time purchases
-- **FR-023**: Subscribers MUST be able to skip upcoming deliveries before Wednesday 11:59 PM
+- **FR-023**: Subscribers MUST be able to skip upcoming deliveries before Tuesday 6:00 PM (for Sunday delivery) or Saturday 6:00 PM (for Wednesday delivery)
 - **FR-024**: Subscribers MUST be able to pause their subscription for up to 3 months maximum
 - **FR-025**: Subscribers MUST be able to resume paused subscriptions
 - **FR-026**: Subscribers MUST be able to cancel subscriptions before 6 PM on Tuesday (for Sunday delivery) or before 6 PM on Saturday (for Wednesday delivery)
 - **FR-027**: System MUST allow subscribers to change bundle size
 - **FR-028**: System MUST allow subscribers to switch delivery days between Sunday and Wednesday
 - **FR-029**: System MUST process recurring payments every Thursday at 12:02 AM
-- **FR-030**: Subscribers MUST be able to update meal selections until Wednesday 11:59 PM
+- **FR-030**: Subscribers MUST be able to update meal selections until Tuesday 6:00 PM (for Sunday delivery) or Saturday 6:00 PM (for Wednesday delivery)
 - **FR-031**: First-time subscribers MUST select meals to complete subscription setup
-- **FR-032**: For existing subscribers who don't select meals before cutoff, system behavior requires further business definition
+- **FR-032**: For existing subscribers who don't select meals before cutoff, system MUST automatically select 3 default recommended meals from the current weekly menu
+- **FR-033**: System MUST maintain a recommendation algorithm to select default meals based on meal popularity and availability
+- **FR-034**: System MUST notify customers when default meal selection has been applied due to missed deadline
 
 #### Shopping Cart & Checkout
 
@@ -123,12 +131,10 @@ As a busy professional in Toronto who appreciates Asian cuisine, I want to subsc
 - **FR-040**: System MUST generate unique order numbers
 - **FR-041**: System MUST send order confirmation emails immediately after purchase
 - **FR-042**: System MUST allow selection of delivery window (5:30-10:00 PM)
-- **FR-043**: System MUST support gift card purchases
-- **FR-044**: System MUST allow gift card redemption at checkout
 
 #### Delivery Management
 
-- **FR-050**: System MUST validate postal codes against Greater Toronto Area delivery zones
+- **FR-050**: System MUST validate postal codes against Greater Vancouver Area delivery zones
 - **FR-051**: System MUST schedule deliveries for Sunday or Wednesday 5:30-10:00 PM
 - **FR-052**: System MUST allocate insulated bags for orders with 5+ meals
 - **FR-053**: System MUST track delivery status (pending, preparing, out for delivery, delivered)
@@ -184,12 +190,15 @@ As a busy professional in Toronto who appreciates Asian cuisine, I want to subsc
 #### Notifications & Communications
 
 - **FR-110**: System MUST send order confirmation emails within 5 minutes of purchase
-- **FR-111**: System MUST send weekly menu announcements every Thursday at 5:00 PM
+- **FR-111**: System MUST send weekly menu announcements every Tuesday at 12:00 PM (for Sunday delivery) and Saturday at 12:00 PM (for Wednesday delivery)
 - **FR-112**: System MUST send delivery reminders to customers
 - **FR-113**: System MUST send subscription renewal confirmations
 - **FR-114**: System MUST send password reset emails within 1 minute of request
 - **FR-115**: System MUST allow users to manage email preferences
 - **FR-116**: System MUST provide an info email address for customers to send delivery issues or quality complaints
+- **FR-117**: System MUST provide chat bot functionality for basic customer inquiries and information
+- **FR-118**: System MUST integrate with WeChat and Instagram for customer service communication
+- **FR-119**: System MUST automatically escalate complex issues to human customer service representatives
 
 #### Payment Processing
 
@@ -200,7 +209,17 @@ As a busy professional in Toronto who appreciates Asian cuisine, I want to subsc
 - **FR-127**: System MUST cancel orders with failed subscription payments and send payment retry link to customer
 - **FR-124**: System MUST generate payment receipts for all transactions
 - **FR-125**: System MUST support refunds and partial refunds
+- **FR-208**: System MUST provide automatic refund processing for quality complaints
+- **FR-209**: System MUST allow promo codes to stack with 5% subscription discount
 - **FR-126**: System MUST maintain PCI compliance for payment data
+
+#### Loyalty & Rewards System
+
+- **FR-203**: System MUST award 1 loyalty point for every $1 spent on orders
+- **FR-204**: System MUST allow customers to redeem 1000 points for a free 6-meal bundle
+- **FR-205**: System MUST track loyalty points balance and transaction history for each customer
+- **FR-206**: System MUST display current points balance in customer dashboard
+- **FR-207**: System MUST allow points redemption during checkout process
 
 ### Key Entities
 
@@ -214,10 +233,12 @@ As a busy professional in Toronto who appreciates Asian cuisine, I want to subsc
 - **Delivery**: Represents scheduled deliveries with time window, address, and status tracking
 - **Payment**: Represents payment transactions including recurring charges and refunds
 - **PromoCode**: Represents discount codes with validation rules and usage limits
-- **GiftCard**: Represents purchasable gift cards with balance and redemption tracking
 - **Review**: Represents customer feedback and ratings for meals
 - **BlogPost**: Represents content articles about food culture and nutrition
 - **AdminUser**: Represents staff accounts with permissions for system management
+- **CustomerServiceTicket**: Represents customer inquiries and support requests with chat bot integration
+- **LoyaltyPoints**: Represents customer loyalty points balance and transaction history
+- **AddOnItem**: Represents add-on products like yogurt bowls and trendy sandwiches that can be added to meal orders
 
 ---
 
@@ -268,13 +289,13 @@ As a busy professional in Toronto who appreciates Asian cuisine, I want to subsc
 
 ### Target Market
 
-- Primary: Busy professionals in Greater Toronto Area
+- Primary: Busy professionals in Greater Vancouver Area
 - Secondary: Families seeking convenient, healthy meal options
 - Demographics: Health-conscious individuals who appreciate Asian cuisine
 
 ### Business Goals
 
-- Establish first Toronto-focused Asian meal delivery service
+- Establish first Vancouver-focused Asian meal delivery service
 - Build community around Asian food culture (#RootedThroughFood)
 - Achieve sustainable growth through customer retention
 - Support local Canadian suppliers
@@ -291,7 +312,7 @@ As a busy professional in Toronto who appreciates Asian cuisine, I want to subsc
 
 ### Competitive Differentiators
 
-- First Toronto-focused Asian meal delivery service
+- First Vancouver-focused Asian meal delivery service
 - Chef with Four Seasons Hotel experience
 - Cultural education through content and campaigns
 - Bilingual menu support (English and Chinese)

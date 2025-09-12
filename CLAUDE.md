@@ -131,15 +131,17 @@ tests/
 
 ### Subscription Management
 
-- Bundle sizes: 6, 8, 10, 12 meals
-- 5% discount for subscription vs one-time orders
+- Bundle sizes: 6, 8, 10, 12 meals (with 3-meal half-week options)
+- 5% discount for subscription vs one-time orders (stackable with promo codes)
 - Billing every Thursday at 12:02 AM
-- Meal selection deadline: Wednesday 11:59 PM
+- Meal selection deadline: Tuesday 6:00 PM (Sunday delivery) or Saturday 6:00 PM (Wednesday delivery)
+- Default meal selection: System automatically selects 3 recommended meals if deadline missed
 - Cancellation deadline: 6 PM Tuesday (Sunday delivery) or Saturday (Wednesday delivery)
+- Menu notifications: Tuesday 12:00 PM (Sunday delivery) and Saturday 12:00 PM (Wednesday delivery)
 
 ### Delivery Management
 
-- GTA postal code validation required
+- Greater Vancouver Area postal code validation required (BC province)
 - Two delivery days: Sunday and Wednesday (5:30-10:00 PM)
 - Insulated bags for orders with 5+ meals
 - Delivery fee calculation based on postal code zones
@@ -148,12 +150,23 @@ tests/
 
 - Stripe integration for credit/debit cards and subscriptions
 - Failed payment retry: 3 attempts with 3-hour intervals
-- Gift card support with balance tracking
-- Promo code validation and discount application
+- Loyalty points system: 1 dollar = 1 point, 1000 points = free 6-meal bundle
+- Promo code validation and discount application (stackable with subscription discount)
+- Automatic refund processing for quality complaints
+- QuickBooks integration (future implementation)
+
+### Additional Features
+
+- **Customer Service**: Chat bot for basic inquiries with WeChat/Instagram escalation
+- **Add-on Items**: Yogurt bowls and trendy sandwiches available as add-ons
+- **Beta Testing**: Limited to 10 new customers per week initially
+- **Weekly Menu**: 6 meal options per week (expanding in future)
+- **Inventory Prediction**: Historical data-based demand forecasting
 
 ## Recent Changes
 
 - **001-create-comprehensive-technical**: Added TypeScript + Next.js 14 + Prisma ORM + Stripe integration + Mobile-first responsive design
+- **Business Requirements Update**: Updated meal deadlines, Vancouver delivery, loyalty points, customer service integration, removed gift cards
 
 <!-- MANUAL ADDITIONS START -->
 <!-- Add any manual additions here - they will be preserved during updates -->

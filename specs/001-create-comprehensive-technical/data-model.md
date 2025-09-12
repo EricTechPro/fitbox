@@ -38,8 +38,9 @@ model User {
   subscriptions     Subscription[]
   orders            Order[]
   reviews           Review[]
-  giftCards         GiftCard[]
   paymentMethods    PaymentMethod[]
+  loyaltyPoints     LoyaltyPointTransaction[]
+  serviceTickets    CustomerServiceTicket[]
 
   @@map("users")
 }
@@ -97,8 +98,8 @@ model Address {
 
 **Validation Rules**:
 
-- Postal code: Must match GTA delivery zones (FR-050)
-- Province: Must be "ON" for Greater Toronto Area
+- Postal code: Must match Greater Vancouver Area delivery zones (FR-050)
+- Province: Must be "BC" for Greater Vancouver Area
 - Delivery zone: Calculated from postal code
 
 ### Meal
@@ -175,7 +176,7 @@ model WeeklyMenu {
   // Menu timing
   weekStartDate Date      // Monday of the week
   weekEndDate   Date      // Sunday of the week
-  publishedAt   DateTime? // Thursday 5:00 PM (FR-010)
+  publishedAt   DateTime? // Thursday 5:00 PM (FR-010), notifications Tuesday/Saturday 12:00 PM
   isActive      Boolean   @default(false)
 
   // Menu metadata
@@ -246,7 +247,7 @@ model Subscription {
   pauseReason       String?
 
   // Meal selection tracking
-  mealSelectionDue  DateTime           // Wednesday 11:59 PM
+  mealSelectionDue  DateTime           // Tuesday 6:00 PM (Sunday delivery) or Saturday 6:00 PM (Wednesday delivery)
   hasSelectedMeals  Boolean            @default(false)
 
   // Timestamps
@@ -349,6 +350,7 @@ model Order {
   weeklyMenu        WeeklyMenu?    @relation(fields: [weeklyMenuId], references: [id])
   deliveryAddress   Address        @relation(fields: [deliveryAddressId], references: [id])
   orderItems        OrderItem[]
+  orderAddOns       OrderAddOn[]
   payments          Payment[]
 
   @@map("orders")
@@ -446,7 +448,6 @@ model Payment {
 enum PaymentMethodType {
   CREDIT_CARD
   DEBIT_CARD
-  GIFT_CARD
 }
 
 model PaymentMethod {
@@ -488,7 +489,7 @@ model DeliveryZone {
   id           String   @id @default(cuid())
 
   // Zone details
-  name         String   // "Downtown Toronto", "North York", etc.
+  name         String   // "Downtown Vancouver", "Richmond", "Burnaby", etc.
   code         String   @unique // "DT", "NY", etc.
 
   // Coverage
@@ -557,50 +558,192 @@ enum DiscountType {
 }
 ```
 
-### GiftCard
+### LoyaltyPointTransaction
 
-**Purpose**: Purchasable gift cards with balance tracking
-**Source**: FR-043, FR-044, Shopping Cart & Checkout
+**Purpose**: Track customer loyalty points earned and redeemed
+**Source**: FR-203 to FR-207, Loyalty & Rewards System
 
 ```prisma
-model GiftCard {
-  id            String          @id @default(cuid())
+model LoyaltyPointTransaction {
+  id          String             @id @default(cuid())
+  userId      String
 
-  // Gift card details
-  code          String          @unique
-  initialValue  Decimal         @db.Decimal(10,2)
-  currentValue  Decimal         @db.Decimal(10,2)
-  currency      String          @default("CAD")
-
-  // Purchaser and recipient
-  purchasedBy   String?         // User who bought it
-  recipientEmail String?
-  recipientName String?
-  personalMessage String?
-
-  // Status
-  status        GiftCardStatus  @default(ACTIVE)
-
-  // Validity
-  validFrom     DateTime        @default(now())
-  validUntil    DateTime?       // Optional expiry
+  // Transaction details
+  points      Int                // Positive for earned, negative for redeemed
+  orderId     String?            // Order that generated points (if earned)
+  type        PointTransactionType
+  description String?            // "Earned from order #123", "Redeemed for free bundle"
 
   // Timestamps
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  redeemedAt    DateTime?
+  createdAt   DateTime           @default(now())
 
   // Relations
-  purchaser     User?           @relation(fields: [purchasedBy], references: [id])
+  user        User               @relation(fields: [userId], references: [id])
 
-  @@map("gift_cards")
+  @@map("loyalty_point_transactions")
 }
 
-enum GiftCardStatus {
-  ACTIVE
+enum PointTransactionType {
+  EARNED
   REDEEMED
   EXPIRED
-  CANCELLED
+  ADJUSTED  // Manual admin adjustments
+}
+```
+
+### CustomerServiceTicket
+
+**Purpose**: Handle customer inquiries and chat bot interactions
+**Source**: FR-117 to FR-119, Customer Service System
+
+```prisma
+model CustomerServiceTicket {
+  id            String              @id @default(cuid())
+  userId        String?             // Null for anonymous inquiries
+
+  // Ticket details
+  subject       String
+  description   String
+  priority      TicketPriority      @default(NORMAL)
+  status        TicketStatus        @default(OPEN)
+  category      TicketCategory      @default(GENERAL)
+
+  // Communication channels
+  source        CommunicationSource @default(WEBSITE)
+  contactInfo   Json?               // WeChat ID, Instagram handle, etc.
+
+  // Assignment
+  assignedTo    String?             // Admin user ID
+  escalated     Boolean             @default(false)
+  botHandled    Boolean             @default(true)  // Initially handled by bot
+
+  // Resolution
+  resolvedAt    DateTime?
+  resolution    String?
+
+  // Timestamps
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  // Relations
+  user          User?               @relation(fields: [userId], references: [id])
+
+  @@map("customer_service_tickets")
+}
+
+enum TicketPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+  ESCALATED
+}
+
+enum TicketCategory {
+  GENERAL
+  ORDER_ISSUE
+  DELIVERY_PROBLEM
+  PAYMENT_ISSUE
+  SUBSCRIPTION_HELP
+  TECHNICAL_SUPPORT
+  REFUND_REQUEST
+  QUALITY_COMPLAINT
+}
+
+enum CommunicationSource {
+  WEBSITE
+  CHAT_BOT
+  EMAIL
+  WECHAT
+  INSTAGRAM
+  PHONE
+}
+```
+
+### AddOnItem
+
+**Purpose**: Additional products customers can add to their orders
+**Source**: FR-018, FR-019, Add-on Items Support
+
+```prisma
+model AddOnItem {
+  id            String           @id @default(cuid())
+
+  // Basic information
+  name          String
+  nameZh        String?          // Chinese characters
+  description   String
+  category      AddOnCategory
+
+  // Media
+  imageUrl      String?
+  imageAlt      String?
+
+  // Pricing
+  price         Decimal          @db.Decimal(10,2)
+
+  // Nutritional information
+  calories      Int?
+  protein       Float?           // grams
+  carbs         Float?           // grams
+  fat           Float?           // grams
+
+  // Allergen information
+  allergens     String[]         // ["nuts", "dairy", "gluten", etc.]
+  isVegetarian  Boolean          @default(false)
+  isVegan       Boolean          @default(false)
+
+  // Operational
+  isActive      Boolean          @default(true)
+  maxQuantity   Int?             // Order limit per customer
+
+  // Timestamps
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  // Relations
+  orderAddOns   OrderAddOn[]
+
+  @@map("add_on_items")
+}
+
+enum AddOnCategory {
+  YOGURT_BOWL
+  SANDWICH
+  SNACK
+  BEVERAGE
+  DESSERT
+}
+
+model OrderAddOn {
+  id          String     @id @default(cuid())
+  orderId     String
+  addOnItemId String
+
+  // Item details
+  quantity    Int        @default(1)
+  unitPrice   Decimal    @db.Decimal(10,2)
+  totalPrice  Decimal    @db.Decimal(10,2)
+
+  // Snapshot data
+  itemName    String
+  itemNameZh  String?
+
+  // Timestamps
+  createdAt   DateTime   @default(now())
+
+  // Relations
+  order       Order      @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  addOnItem   AddOnItem  @relation(fields: [addOnItemId], references: [id])
+
+  @@map("order_add_ons")
 }
 ```
 
@@ -704,8 +847,9 @@ User (1) ←→ (N) Address
 User (1) ←→ (N) Subscription
 User (1) ←→ (N) Order
 User (1) ←→ (N) Review
-User (1) ←→ (N) GiftCard
 User (1) ←→ (N) PaymentMethod
+User (1) ←→ (N) LoyaltyPointTransaction
+User (1) ←→ (N) CustomerServiceTicket
 
 Subscription (1) ←→ (N) SubscriptionItem
 Subscription (1) ←→ (N) Order
@@ -718,8 +862,11 @@ Meal (1) ←→ (N) OrderItem
 Meal (1) ←→ (N) Review
 
 Order (1) ←→ (N) OrderItem
+Order (1) ←→ (N) OrderAddOn
 Order (1) ←→ (N) Payment
 Order (N) ←→ (1) Address (delivery address)
+
+AddOnItem (1) ←→ (N) OrderAddOn
 ```
 
 ## State Transitions
@@ -755,7 +902,7 @@ PAID → REFUNDED | PARTIALLY_REFUNDED
 - Email uniqueness enforced at database level
 - Postal codes validated against delivery zones before order creation
 - Subscription pause duration cannot exceed 3 months (FR-024)
-- Meal selection deadline enforced: Wednesday 11:59 PM (FR-030)
+- Meal selection deadline enforced: Tuesday 6:00 PM (Sunday delivery) or Saturday 6:00 PM (Wednesday delivery) (FR-030)
 - Order cancellation deadline: 6 PM Tuesday/Saturday (FR-026)
 - Inventory tracking prevents overselling (FR-106)
 - Price calculations include taxes and fees (Canadian standards)

@@ -44,7 +44,7 @@ Build a comprehensive web-based meal delivery platform for Asian fusion cuisine 
 **Project Type**: web - determines frontend/backend structure  
 **Performance Goals**: <3s page load, <200ms API response, 1000+ concurrent users  
 **Constraints**: Mobile-first responsive, WCAG 2.1 AA compliance, PCI compliance  
-**Scale/Scope**: GTA delivery zones, 129 functional requirements, 15 core entities
+**Scale/Scope**: Greater Vancouver Area delivery zones, 132+ functional requirements, 15+ core entities
 
 ## Constitution Check
 
