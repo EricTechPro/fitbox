@@ -1,4 +1,4 @@
-# Tasks: FitBox Meal App MVP
+# Tasks: FitBox Meal App MVP - Sequential Implementation
 
 **Input**: Design documents from `/specs/001-create-comprehensive-technical/`  
 **Prerequisites**: plan.md, research.md, data-model.md, contracts/api-spec.yaml, quickstart.md
@@ -10,116 +10,213 @@
    → ✅ Found: Next.js 14+, TypeScript, Prisma ORM, Stripe, shadcn/ui
    → ✅ Structure: Web app (frontend + backend in Next.js)
 2. Load optional design documents:
-   → ✅ data-model.md: 15 core entities (User, Meal, Order, Subscription, etc.)
-   → ✅ contracts/: 50+ API endpoints across 8 categories
+   → ✅ data-model.md: Simplified to 6 core entities for MVP Phase 1
+   → ✅ contracts/: Focus on essential API endpoints (20+ for MVP)
    → ✅ research.md: Technology decisions validated
    → ✅ quickstart.md: 9 core user journeys for validation
-3. Generate tasks by category:
-   → Setup: Next.js project, Prisma, shadcn/ui, environment
-   → Tests: API contract tests, integration scenarios
-   → Core: Database models, API routes, UI components
-   → Integration: Authentication, payments, email
-   → Polish: E2E tests, performance, deployment
+3. Generate tasks by priority phases:
+   → MVP Phase 1 (Weeks 1-2): Essential ordering system (20 tasks)
+   → Phase 2 (Weeks 3-4): Subscription system (15 tasks)
+   → Phase 3 (Weeks 5-8): Growth features (20 tasks)
 4. Apply task rules:
-   → Different files/components = mark [P] for parallel
-   → API routes = sequential (shared middleware)
+   → Sequential execution for faster delivery
    → Tests before implementation (TDD enforced)
-5. Number tasks sequentially (T001-T055)
-6. Focus on MVP: Core functionality for local testing
-7. SUCCESS: 55 tasks ready for execution
+   → Focus on core value delivery first
+5. Number tasks by priority (T001-T055)
+6. Focus on MVP Phase 1: Core ordering for immediate launch
+7. SUCCESS: 55 tasks reorganized for sequential delivery
 ```
 
-## Format: `[ID] [P?] Description`
+## Task Priority Legend
 
-- **[P]**: Can run in parallel (different files, no dependencies)
-- **MVP Focus**: Essential features for local testing and validation
+- **🔴 MVP PHASE 1** (Weeks 1-2): Essential for immediate launch - **EXECUTE FIRST**
+- **🟡 PHASE 2** (Weeks 3-4): Important subscription features - **DEFER TO WEEK 3**
+- **🟢 PHASE 3** (Weeks 5-8): Growth features - **DEFER TO WEEK 5**
 
-## Phase 3.1: Project Setup & Configuration
+## CRITICAL: Execute in Order - No Parallel Processing
 
-- [ ] **T001** Create Next.js 14 project with TypeScript and configure project structure
+## 🔴 MVP PHASE 1: Essential Foundation (Week 1)
+
+### Setup & Configuration (Days 1-2)
+
+- [x] **T001** 🔴 Create Next.js 14 project with TypeScript and configure project structure
   - Path: Repository root
   - Set up `src/app/`, `src/components/`, `src/lib/`, `src/types/`
   - Configure `tsconfig.json`, `next.config.js`, and basic folder structure
 
-- [ ] **T002** [P] Install and configure core dependencies
+- [x] **T002** 🔴 Install and configure core dependencies
   - Path: `package.json`
   - Next.js, React, TypeScript, Tailwind CSS, Prisma, NextAuth.js, Stripe, Zod
 
-- [ ] **T003** [P] Configure development tools and scripts
+- [x] **T003** 🔴 Configure development tools and scripts
   - Path: `package.json`, `.eslintrc.js`, `.prettierrc`, `husky` hooks
   - ESLint, Prettier, pre-commit hooks, development scripts
 
-- [ ] **T004** [P] Setup shadcn/ui component library
+- [x] **T004** 🔴 Setup shadcn/ui component library
   - Path: `components.json`, `src/components/ui/`
   - Run `npx shadcn-ui@latest init`, install base components (Button, Input, Card)
 
-- [ ] **T005** [P] Configure environment variables and validation
+- [x] **T005** 🔴 Configure environment variables and validation
   - Path: `.env.example`, `.env.local`, `src/lib/env.ts`
   - Database, authentication, Stripe, email service configuration with Zod validation
 
-## Phase 3.2: Database Setup & Models (TDD - Tests First)
+### Database Setup & Core Models (Days 3-4)
 
-**CRITICAL: These tests MUST be written and MUST FAIL before ANY model implementation**
+**CRITICAL: MVP Phase 1 focuses on 6 core entities only**
 
-- [ ] **T006** [P] Setup Prisma ORM with PostgreSQL schema
+- [ ] **T006** 🔴 Setup Prisma ORM with PostgreSQL schema
   - Path: `prisma/schema.prisma`, `prisma/migrations/`
   - Base configuration, connection setup, migration infrastructure
 
-- [ ] **T007** [P] Contract test for User model operations
+- [ ] **T007** 🔴 Contract test for User model operations
   - Path: `tests/contract/user-model.test.ts`
   - Test user CRUD operations, validation rules, password hashing
 
-- [ ] **T008** [P] Contract test for Meal and WeeklyMenu models
+- [ ] **T008** 🔴 Contract test for Meal and WeeklyMenu models
   - Path: `tests/contract/meal-model.test.ts`
   - Test meal creation, menu rotation, bilingual support, inventory tracking
 
-- [ ] **T009** [P] Contract test for Order and Subscription models
+- [ ] **T009** 🟡 Contract test for Order and Subscription models
   - Path: `tests/contract/order-model.test.ts`
-  - Test order processing, subscription management, payment integration
+  - **DEFERRED**: Test order processing only, skip subscription for MVP Phase 1
 
-- [ ] **T010** [P] User model implementation with authentication fields
+- [ ] **T010** 🔴 User model implementation with authentication fields
   - Path: `prisma/schema.prisma` (User, Address models)
-  - Email verification, password hashing, contact information, roles
+  - Basic email/password, contact information, delivery addresses
 
-- [ ] **T011** [P] Meal and WeeklyMenu model implementation
+- [ ] **T011** 🔴 Meal and WeeklyMenu model implementation
   - Path: `prisma/schema.prisma` (Meal, WeeklyMenu, WeeklyMenuItem models)
   - Bilingual support, nutritional info, allergens, inventory management
 
-- [ ] **T012** [P] Order and Subscription model implementation
-  - Path: `prisma/schema.prisma` (Order, Subscription, OrderItem, SubscriptionItem models)
-  - Payment integration, delivery management, subscription flexibility
+- [ ] **T012** 🔴 Order model implementation (one-time orders only)
+  - Path: `prisma/schema.prisma` (Order, OrderItem models)
+  - **SIMPLIFIED**: One-time orders only, no subscription complexity
 
-- [ ] **T013** [P] Supporting models for MVP functionality
-  - Path: `prisma/schema.prisma` (DeliveryZone, Payment, PromoCode models)
-  - Postal code validation, payment processing, discount system
+- [ ] **T013** 🔴 Supporting models for MVP functionality
+  - Path: `prisma/schema.prisma` (DeliveryZone, Payment models)
+  - **SIMPLIFIED**: Postal code validation, basic payment processing
 
-- [ ] **T014** Database migration and seed data setup
+- [ ] **T014** 🔴 Database migration and seed data setup
   - Path: `prisma/seed.ts`, run migrations
-  - Create initial data: admin user, sample meals, delivery zones, test menu
+  - Create initial data: admin user, 6 sample meals, delivery zones, test menu
 
-## Phase 3.3: Authentication System (NextAuth.js)
+### Basic Authentication (Days 5-6)
 
-- [ ] **T015** [P] Authentication configuration and setup
+- [ ] **T015** 🔴 Authentication configuration and setup
   - Path: `src/app/api/auth/[...nextauth]/route.ts`, `src/lib/auth.ts`
   - NextAuth.js configuration, JWT strategy, session management
 
-- [ ] **T016** [P] Contract test for authentication endpoints
+- [ ] **T016** 🔴 Contract test for authentication endpoints
   - Path: `tests/contract/auth-api.test.ts`
-  - Test registration, login, email verification, password reset flows
+  - Test registration, login flows (no email verification for MVP Phase 1)
 
-- [ ] **T017** [P] User registration API route with email verification
+- [ ] **T017** 🔴 User registration API route (simplified)
   - Path: `src/app/api/auth/register/route.ts`
-  - User creation, password hashing, email verification trigger
+  - User creation, password hashing (no email verification for MVP Phase 1)
 
-- [ ] **T018** [P] Email verification service integration
+- [ ] **T018** 🟡 Email verification service integration
   - Path: `src/lib/email.ts`, `src/app/api/auth/verify-email/route.ts`
-  - Email sending with Resend/SendGrid, verification token handling
+  - **DEFERRED**: Email sending with Resend/SendGrid for Phase 2
 
-- [ ] **T019** Authentication UI components and pages
+- [ ] **T019** 🔴 Authentication UI components and pages
   - Path: `src/app/(auth)/login/page.tsx`, `src/app/(auth)/register/page.tsx`
-  - Login form, registration form, email verification flow
+  - Login form, registration form (simplified for MVP Phase 1)
 
-## Phase 3.4: Core API Endpoints (TDD - Tests First)
+### Essential API Endpoints (Days 7-8)
+
+- [ ] **T020** 🔴 Contract test for menu and meal endpoints
+  - Path: `tests/contract/menu-api.test.ts`
+  - Test current menu retrieval, meal details, category filtering
+
+- [ ] **T021** 🔴 Contract test for delivery zone validation
+  - Path: `tests/contract/delivery-api.test.ts`
+  - Test postal code validation, delivery fee calculation
+
+- [ ] **T022** 🔴 Menu and meal API endpoints implementation
+  - Path: `src/app/api/menus/route.ts`, `src/app/api/meals/[id]/route.ts`
+  - Current menu endpoint, meal details, search and filtering
+
+- [ ] **T023** 🔴 Delivery zone validation API endpoint
+  - Path: `src/app/api/delivery-zones/validate/route.ts`
+  - Postal code validation, delivery zone lookup, fee calculation
+
+- [ ] **T024** 🔴 Shopping cart API endpoints with session persistence
+  - Path: `src/app/api/cart/route.ts`
+  - Cart CRUD operations, session-based storage, persistence across logins
+
+- [ ] **T025** 🔴 Order creation API endpoint (one-time orders only)
+  - Path: `src/app/api/orders/route.ts`
+  - **SIMPLIFIED**: One-time order creation, status updates (no subscription complexity)
+
+## 🔴 MVP PHASE 1: Essential UI (Week 2)
+
+### Core Frontend Components (Days 9-12)
+
+- [ ] **T026** 🔴 Base layout and navigation components
+  - Path: `src/components/layout/`, `src/app/layout.tsx`
+  - Responsive header, mobile navigation, footer
+
+- [ ] **T027** 🔴 Menu display components with bilingual support
+  - Path: `src/components/menu/`
+  - Menu grid, meal cards, category filters, bilingual text display
+
+- [ ] **T028** 🔴 Shopping cart components
+  - Path: `src/components/cart/`
+  - Cart sidebar, item management, basic checkout flow
+
+- [ ] **T029** 🔴 Payment components with Stripe Elements
+  - Path: `src/components/payment/`
+  - Payment form, card input, payment confirmation (one-time payments only)
+
+- [ ] **T030** 🔴 Homepage and menu browsing pages
+  - Path: `src/app/page.tsx`, `src/app/menu/page.tsx`
+  - Landing page, postal code check, menu display, meal selection
+
+### MVP Phase 1 Launch Preparation (Days 13-14)
+
+- [ ] **T031** 🔴 Basic integration test for guest checkout
+  - Path: `tests/integration/guest-checkout.test.ts`
+  - Menu browsing → cart → guest checkout → payment → confirmation
+
+- [ ] **T032** 🔴 Basic admin order management
+  - Path: `src/app/admin/orders/page.tsx`
+  - **SIMPLIFIED**: View orders, basic order processing, manual status updates
+
+- [ ] **T033** 🔴 Local deployment and testing
+  - Path: Local environment
+  - Validate core ordering flow works end-to-end
+
+---
+
+## 📋 MVP PHASE 1 SUMMARY (33 Tasks → 2 Weeks)
+
+**GOAL**: Launch basic ordering capability for immediate business needs
+
+**CORE FEATURES INCLUDED**:
+
+- ✅ User registration and authentication (simplified)
+- ✅ Weekly menu display with 6 meal options
+- ✅ Shopping cart and one-time order checkout
+- ✅ Basic delivery zone validation
+- ✅ Stripe payment processing (one-time only)
+- ✅ Order confirmation system
+- ✅ Basic admin order management
+
+**MVP FEATURES DEFERRED TO PHASE 2**:
+
+- ❌ Subscription system (start with one-time orders)
+- ❌ Email verification (use basic validation)
+- ❌ Advanced customer service features
+- ❌ Blog and content management
+- ❌ Loyalty points system
+
+**EXECUTION**: Sequential implementation, 33 tasks over 14 days
+
+---
+
+## 🟡 PHASE 2: Subscription & Automation (Weeks 3-4) - DEFERRED
+
+The following tasks are moved to Phase 2:
 
 **CRITICAL: Contract tests must fail before implementing these endpoints**
 

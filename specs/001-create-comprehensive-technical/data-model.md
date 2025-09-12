@@ -1,46 +1,69 @@
-# Data Model: FitBox Meal App
+# Data Model: FitBox Meal App - MVP Phase Approach
 
 **Date**: 2025-09-11  
-**Phase**: 1 - Design & Contracts  
+**Phase**: 1 - Design & Contracts (Updated for Sequential Implementation)  
 **Database**: PostgreSQL with Prisma ORM
+
+## Implementation Strategy
+
+**MVP PHASE 1 (Weeks 1-2)**: Focus on 6 core entities for basic ordering system
+**PHASE 2 (Weeks 3-4)**: Add subscription management and automation features  
+**PHASE 3 (Weeks 5-8)**: Add community features and advanced functionality
+
+---
+
+## 🔴 MVP PHASE 1 ENTITIES (Essential - Implement First)
+
+The following 6 entities are CRITICAL for basic one-time ordering functionality and must be implemented first:
+
+1. **User** - Customer accounts and authentication
+2. **Meal** - Individual meal items with pricing and details
+3. **WeeklyMenu** - Current menu offerings and rotation
+4. **Order** - One-time order processing (simplified, no subscriptions)
+5. **DeliveryZone** - Postal code validation for Greater Vancouver Area
+6. **Payment** - Stripe payment processing for one-time orders
+
+---
 
 ## Core Entities
 
-### User
+### User 🔴
 
-**Purpose**: Customer and admin accounts with authentication and profile data
+**Purpose**: Customer and admin accounts with authentication and profile data (SIMPLIFIED FOR MVP)
 **Source**: FR-001, FR-005, User Scenarios
+**MVP Status**: Core entity - implement first with simplified fields
 
 ```prisma
+// MVP PHASE 1 - Simplified User Model
 model User {
   id                String    @id @default(cuid())
   email             String    @unique
-  emailVerified     DateTime?
   password          String    // bcrypt hashed
   firstName         String?
   lastName          String?
-  phone             String?
-  wechat            String?
-  emergencyPhone    String?
+  phone             String?   // For delivery contact
   role              UserRole  @default(CUSTOMER)
-
-  // Profile settings
-  preferences       Json?
-  emailPreferences  Json?     // newsletter, promotions, etc.
 
   // Timestamps
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
-  lastLoginAt       DateTime?
 
-  // Relations
+  // MVP Relations (simplified)
   addresses         Address[]
-  subscriptions     Subscription[]
-  orders            Order[]
-  reviews           Review[]
-  paymentMethods    PaymentMethod[]
-  loyaltyPoints     LoyaltyPointTransaction[]
-  serviceTickets    CustomerServiceTicket[]
+  orders            Order[]   // One-time orders only for MVP
+
+  // DEFERRED TO PHASE 2:
+  // emailVerified     DateTime?
+  // wechat            String?
+  // emergencyPhone    String?
+  // preferences       Json?
+  // emailPreferences  Json?
+  // lastLoginAt       DateTime?
+  // subscriptions     Subscription[]
+  // reviews           Review[]
+  // paymentMethods    PaymentMethod[]
+  // loyaltyPoints     LoyaltyPointTransaction[]
+  // serviceTickets    CustomerServiceTicket[]
 
   @@map("users")
 }
@@ -59,7 +82,7 @@ enum UserRole {
 - Phone: Canadian format validation
 - Emergency contact: Required for customer service (FR-129)
 
-### Address
+### Address 🔴
 
 **Purpose**: Delivery addresses with postal code validation
 **Source**: FR-050, FR-055, Delivery Management
@@ -102,7 +125,7 @@ model Address {
 - Province: Must be "BC" for Greater Vancouver Area
 - Delivery zone: Calculated from postal code
 
-### Meal
+### Meal 🔴
 
 **Purpose**: Individual meal items with nutritional and cultural information
 **Source**: FR-010 to FR-017, Menu Management
@@ -164,7 +187,7 @@ enum MealCategory {
 }
 ```
 
-### WeeklyMenu
+### WeeklyMenu 🔴
 
 **Purpose**: Weekly rotating menu system published every Thursday
 **Source**: FR-010, FR-111, Rotating Menu System
@@ -300,10 +323,11 @@ model SubscriptionItem {
 }
 ```
 
-### Order
+### Order 🔴
 
-**Purpose**: Both one-time purchases and subscription-generated orders
+**Purpose**: One-time purchases (SIMPLIFIED FOR MVP - no subscription complexity)
 **Source**: FR-035 to FR-044, Shopping Cart & Checkout
+**MVP Status**: Core entity - implement first with one-time orders only
 
 ```prisma
 model Order {
@@ -403,9 +427,10 @@ model OrderItem {
 }
 ```
 
-### Payment
+### Payment 🔴
 
-**Purpose**: Payment transactions and Stripe integration
+**Purpose**: Payment transactions and Stripe integration (SIMPLIFIED FOR MVP)
+**MVP Status**: Core entity - implement first with one-time payments only
 **Source**: FR-120 to FR-127, Payment Processing
 
 ```prisma
@@ -479,7 +504,7 @@ model PaymentMethod {
 }
 ```
 
-### DeliveryZone
+### DeliveryZone 🔴
 
 **Purpose**: Postal code-based delivery zone management
 **Source**: FR-050, FR-037, Delivery Management
@@ -897,12 +922,78 @@ PENDING → FAILED → [retry logic] → PAID
 PAID → REFUNDED | PARTIALLY_REFUNDED
 ```
 
+---
+
+## 📋 IMPLEMENTATION SUMMARY BY PHASE
+
+### 🔴 MVP PHASE 1 ENTITIES (Weeks 1-2) - IMPLEMENT FIRST
+
+**Core 6 entities for basic one-time ordering:**
+
+1. **User** 🔴 - Simplified authentication and profile
+2. **Address** 🔴 - Delivery addresses with postal validation
+3. **Meal** 🔴 - Menu items with bilingual support
+4. **WeeklyMenu** 🔴 - Current menu offerings
+5. **Order** 🔴 - One-time orders only (no subscription complexity)
+6. **DeliveryZone** 🔴 - Greater Vancouver Area postal code validation
+7. **Payment** 🔴 - Stripe one-time payment processing
+
+**MVP Features Included:**
+
+- ✅ User registration and authentication (simplified)
+- ✅ Weekly menu display with 6 meal options
+- ✅ Shopping cart and one-time order checkout
+- ✅ Basic delivery zone validation
+- ✅ Stripe payment processing
+- ✅ Order confirmation system
+
+### 🟡 PHASE 2 ENTITIES (Weeks 3-4) - DEFERRED
+
+**Subscription system and automation:**
+
+8. **Subscription** 🟡 - Recurring meal subscriptions
+9. **SubscriptionItem** 🟡 - Meal selections per subscription
+10. **PaymentMethod** 🟡 - Stored payment methods for subscriptions
+
+**Phase 2 Features:**
+
+- 🟡 Full subscription system with recurring billing
+- 🟡 Email verification and notification system
+- 🟡 5% subscription discount
+- 🟡 Subscription pause/skip functionality
+
+### 🟢 PHASE 3 ENTITIES (Weeks 5-8) - DEFERRED
+
+**Community and growth features:**
+
+11. **Review** 🟢 - Customer meal reviews and ratings
+12. **BlogPost** 🟢 - #RootedThroughFood content management
+13. **PromoCode** 🟢 - Discount codes and promotions
+14. **LoyaltyPointTransaction** 🟢 - Points system (1000 points = free bundle)
+15. **CustomerServiceTicket** 🟢 - Advanced customer service
+16. **AddOnItem** 🟢 - Yogurt bowls and sandwich add-ons
+
+**Phase 3 Features:**
+
+- 🟢 Loyalty points system
+- 🟢 Blog and content management
+- 🟢 Advanced customer service (chat bot, WeChat/Instagram)
+- 🟢 Review and rating system
+- 🟢 Add-on items
+
+---
+
 ## Data Validation & Constraints
 
+### MVP Phase 1 (Essential)
+
 - Email uniqueness enforced at database level
-- Postal codes validated against delivery zones before order creation
+- Postal codes validated against Greater Vancouver Area delivery zones
+- Inventory tracking prevents overselling (FR-106)
+- Price calculations include taxes and fees (Canadian standards)
+
+### Phase 2 & 3 (Deferred)
+
 - Subscription pause duration cannot exceed 3 months (FR-024)
 - Meal selection deadline enforced: Tuesday 6:00 PM (Sunday delivery) or Saturday 6:00 PM (Wednesday delivery) (FR-030)
 - Order cancellation deadline: 6 PM Tuesday/Saturday (FR-026)
-- Inventory tracking prevents overselling (FR-106)
-- Price calculations include taxes and fees (Canadian standards)

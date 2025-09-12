@@ -77,37 +77,43 @@ As a busy professional in Vancouver who appreciates Asian cuisine, I want to sub
 
 ### Functional Requirements
 
+**PRIORITY LEGEND**:
+
+- 🔴 **MVP PHASE 1** (Weeks 1-2): Essential for immediate launch
+- 🟡 **PHASE 2** (Weeks 3-4): Important but can be deferred
+- 🟢 **PHASE 3** (Weeks 5-8): Growth features for later
+
 #### User Management & Authentication
 
-- **FR-001**: System MUST allow users to create accounts with email and password
-- **FR-002**: System MUST require email verification - users must verify their email address via a verification email
-- **FR-003**: Users MUST be able to reset their password via secure email link
-- **FR-004**: System MUST support guest checkout for one-time purchases
-- **FR-005**: System MUST maintain user profiles with delivery addresses, payment methods, email, WeChat, and emergency phone number
-- **FR-006**: System MUST allow user-defined passwords without specific complexity requirements
-- **FR-212**: System MUST limit new customer registrations to 10 per week during beta testing phase
-- **FR-213**: System MUST implement waitlist functionality when beta testing limits are reached
+- **FR-001** 🔴: System MUST allow users to create accounts with email and password
+- **FR-002** 🟡: System MUST require email verification - users must verify their email address via a verification email
+- **FR-003** 🟡: Users MUST be able to reset their password via secure email link
+- **FR-004** 🔴: System MUST support guest checkout for one-time purchases
+- **FR-005** 🔴: System MUST maintain user profiles with delivery addresses, payment methods, email, WeChat, and emergency phone number
+- **FR-006** 🔴: System MUST allow user-defined passwords without specific complexity requirements
+- **FR-212** 🟡: System MUST limit new customer registrations to 10 per week during beta testing phase
+- **FR-213** 🟡: System MUST implement waitlist functionality when beta testing limits are reached
 
 #### Menu & Product Management
 
-- **FR-010**: System MUST display a rotating weekly menu that updates every Thursday at 5:00 PM with notifications sent Tuesday/Saturday at 12:00 PM
-- **FR-011**: System MUST categorize meals into: Rice-based, Noodle soups, Pasta fusion, Protein & sides
-- **FR-012**: System MUST display bilingual menu items (English and Chinese characters)
-- **FR-013**: System MUST show nutritional information for each meal
-- **FR-014**: System MUST display allergen information for each meal
-- **FR-015**: System MUST indicate which meals are currently available
-- **FR-016**: System MUST show meal pricing ($17.99-$18.99 per meal)
-- **FR-017**: System MUST display chef information and meal descriptions
-- **FR-018**: System MUST support add-on items including yogurt bowls and trendy sandwiches
-- **FR-019**: System MUST allow customers to add add-on items to their meal bundles during checkout
-- **FR-210**: System MUST offer 6 different meal options per week with plans to expand selection
-- **FR-211**: System MUST support half-week options with 3 meal selections
+- **FR-010** 🟡: System MUST display a rotating weekly menu that updates every Thursday at 5:00 PM with notifications sent Tuesday/Saturday at 12:00 PM
+- **FR-011** 🔴: System MUST categorize meals into: Rice-based, Noodle soups, Pasta fusion, Protein & sides
+- **FR-012** 🔴: System MUST display bilingual menu items (English and Chinese characters)
+- **FR-013** 🔴: System MUST show nutritional information for each meal
+- **FR-014** 🔴: System MUST display allergen information for each meal
+- **FR-015** 🔴: System MUST indicate which meals are currently available
+- **FR-016** 🔴: System MUST show meal pricing ($17.99-$18.99 per meal)
+- **FR-017** 🔴: System MUST display chef information and meal descriptions
+- **FR-018** 🟢: System MUST support add-on items including yogurt bowls and trendy sandwiches
+- **FR-019** 🟢: System MUST allow customers to add add-on items to their meal bundles during checkout
+- **FR-210** 🔴: System MUST offer 6 different meal options per week with plans to expand selection
+- **FR-211** 🟡: System MUST support half-week options with 3 meal selections
 
 #### Subscription Management
 
-- **FR-020**: System MUST offer weekly subscription bundles with Sunday or Wednesday delivery
-- **FR-021**: System MUST provide bundle sizes of 6, 8, 10, and 12 meals
-- **FR-022**: System MUST apply 5% discount to subscription orders vs one-time purchases
+- **FR-020** 🟡: System MUST offer weekly subscription bundles with Sunday or Wednesday delivery
+- **FR-021** 🟡: System MUST provide bundle sizes of 6, 8, 10, and 12 meals
+- **FR-022** 🟡: System MUST apply 5% discount to subscription orders vs one-time purchases
 - **FR-023**: Subscribers MUST be able to skip upcoming deliveries before Tuesday 6:00 PM (for Sunday delivery) or Saturday 6:00 PM (for Wednesday delivery)
 - **FR-024**: Subscribers MUST be able to pause their subscription for up to 3 months maximum
 - **FR-025**: Subscribers MUST be able to resume paused subscriptions
@@ -123,24 +129,24 @@ As a busy professional in Vancouver who appreciates Asian cuisine, I want to sub
 
 #### Shopping Cart & Checkout
 
-- **FR-035**: System MUST maintain shopping cart across user sessions
-- **FR-036**: System MUST validate delivery postal code before checkout and prevent proceeding if address is outside delivery zone
-- **FR-037**: System MUST calculate delivery fees based on location
-- **FR-038**: System MUST support promo codes with various discount types
-- **FR-039**: System MUST process payments securely
-- **FR-040**: System MUST generate unique order numbers
-- **FR-041**: System MUST send order confirmation emails immediately after purchase
-- **FR-042**: System MUST allow selection of delivery window (5:30-10:00 PM)
+- **FR-035** 🔴: System MUST maintain shopping cart across user sessions
+- **FR-036** 🔴: System MUST validate delivery postal code before checkout and prevent proceeding if address is outside delivery zone
+- **FR-037** 🔴: System MUST calculate delivery fees based on location
+- **FR-038** 🟡: System MUST support promo codes with various discount types
+- **FR-039** 🔴: System MUST process payments securely
+- **FR-040** 🔴: System MUST generate unique order numbers
+- **FR-041** 🔴: System MUST send order confirmation emails immediately after purchase
+- **FR-042** 🔴: System MUST allow selection of delivery window (5:30-10:00 PM)
 
 #### Delivery Management
 
-- **FR-050**: System MUST validate postal codes against Greater Vancouver Area delivery zones
-- **FR-051**: System MUST schedule deliveries for Sunday or Wednesday 5:30-10:00 PM
-- **FR-052**: System MUST allocate insulated bags for orders with 5+ meals
-- **FR-053**: System MUST track delivery status (pending, preparing, out for delivery, delivered)
-- **FR-054**: System MUST send delivery notifications to customers
-- **FR-055**: System MUST handle delivery address changes until 6 PM on Tuesday (for Sunday delivery) or 6 PM on Saturday (for Wednesday delivery)
-- **FR-056**: System MUST record delivery completion confirmations
+- **FR-050** 🔴: System MUST validate postal codes against Greater Vancouver Area delivery zones
+- **FR-051** 🔴: System MUST schedule deliveries for Sunday or Wednesday 5:30-10:00 PM
+- **FR-052** 🟡: System MUST allocate insulated bags for orders with 5+ meals
+- **FR-053** 🟡: System MUST track delivery status (pending, preparing, out for delivery, delivered)
+- **FR-054** 🟡: System MUST send delivery notifications to customers
+- **FR-055** 🟡: System MUST handle delivery address changes until 6 PM on Tuesday (for Sunday delivery) or 6 PM on Saturday (for Wednesday delivery)
+- **FR-056** 🟡: System MUST record delivery completion confirmations
 
 #### Customer Account Portal
 
@@ -153,13 +159,13 @@ As a busy professional in Vancouver who appreciates Asian cuisine, I want to sub
 
 #### Content & Community Features
 
-- **FR-070**: System MUST publish blog articles about Asian heritage and nutrition
-- **FR-071**: System MUST support recipe stories with cultural context
-- **FR-072**: System MUST enable customer reviews and ratings for meals
-- **FR-073**: System MUST display customer testimonials
-- **FR-074**: System MUST support email newsletter subscriptions
-- **FR-075**: System MUST send weekly menu announcement emails to subscribers
-- **FR-076**: System MUST track #RootedThroughFood campaign engagement
+- **FR-070** 🟢: System MUST publish blog articles about Asian heritage and nutrition
+- **FR-071** 🟢: System MUST support recipe stories with cultural context
+- **FR-072** 🟢: System MUST enable customer reviews and ratings for meals
+- **FR-073** 🟢: System MUST display customer testimonials
+- **FR-074** 🟡: System MUST support email newsletter subscriptions
+- **FR-075** 🟡: System MUST send weekly menu announcement emails to subscribers
+- **FR-076** 🟢: System MUST track #RootedThroughFood campaign engagement
 
 #### Admin Management System
 
@@ -215,11 +221,11 @@ As a busy professional in Vancouver who appreciates Asian cuisine, I want to sub
 
 #### Loyalty & Rewards System
 
-- **FR-203**: System MUST award 1 loyalty point for every $1 spent on orders
-- **FR-204**: System MUST allow customers to redeem 1000 points for a free 6-meal bundle
-- **FR-205**: System MUST track loyalty points balance and transaction history for each customer
-- **FR-206**: System MUST display current points balance in customer dashboard
-- **FR-207**: System MUST allow points redemption during checkout process
+- **FR-203** 🟢: System MUST award 1 loyalty point for every $1 spent on orders
+- **FR-204** 🟢: System MUST allow customers to redeem 1000 points for a free 6-meal bundle
+- **FR-205** 🟢: System MUST track loyalty points balance and transaction history for each customer
+- **FR-206** 🟢: System MUST display current points balance in customer dashboard
+- **FR-207** 🟢: System MUST allow points redemption during checkout process
 
 ### Key Entities
 
@@ -325,33 +331,53 @@ As a busy professional in Vancouver who appreciates Asian cuisine, I want to sub
 
 ## Implementation Phases (Business View)
 
-### Phase 1: MVP (Weeks 1-8)
+### Phase 1: MVP Core (Weeks 1-2) - IMMEDIATE PRIORITY
 
-**Goal**: Launch basic ordering and delivery capability
+**Goal**: Launch basic ordering capability for immediate business needs
 
-- User registration and authentication
-- Basic product catalog with 20+ meals
-- Shopping cart and checkout
-- Order confirmation emails
-- Admin order management
+**MVP ESSENTIALS (Must Have)**:
 
-### Phase 2: Core Features (Weeks 9-16)
+- User registration with basic email/password authentication
+- Weekly menu display with 6 meal options
+- Shopping cart and one-time order checkout
+- Basic delivery zone validation (postal code check)
+- Stripe payment processing (one-time payments only)
+- Order confirmation system
+- Basic admin order management
 
-**Goal**: Enable subscription model and customer retention
+**MVP FEATURES DEFERRED TO PHASE 2**:
+
+- Subscription system (start with one-time orders)
+- Email verification (use basic validation initially)
+- Advanced customer service features
+- Blog and content management
+- Loyalty points system
+- Review and rating system
+
+### Phase 2: Subscription & Automation (Weeks 3-4)
+
+**Goal**: Add subscription model and automate operations
+
+**PHASE 2 ADDITIONS**:
 
 - Full subscription system with recurring billing
-- Weekly menu rotation system
-- Delivery zone management
-- Customer dashboard
-- Bundle customization
+- Weekly menu rotation automation
+- Email verification and notification system
+- Customer dashboard with order history
+- Subscription pause/skip functionality
+- Bundle size options (6, 8, 10, 12 meals)
+- 5% subscription discount
 
-### Phase 3: Growth Features (Weeks 17-24)
+### Phase 3: Growth & Community (Weeks 5-8)
 
 **Goal**: Drive growth through community and engagement
 
-- Gift card system
-- Blog and content management
-- Email automation
-- Analytics and reporting
-- Mobile optimization considerations
-- Customer service tools and complaint handling
+**PHASE 3 ADDITIONS**:
+
+- Loyalty points system (1000 points = free 6-meal bundle)
+- Blog and content management for #RootedThroughFood campaign
+- Advanced customer service (chat bot, WeChat/Instagram integration)
+- Review and rating system
+- Add-on items (yogurt bowls, sandwiches)
+- Analytics and reporting dashboard
+- Mobile optimization and performance tuning
