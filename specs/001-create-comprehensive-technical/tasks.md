@@ -154,33 +154,62 @@
   - Path: `src/app/api/orders/route.ts`
   - **SIMPLIFIED**: One-time order creation, status updates (no subscription complexity)
 
-## 🔴 MVP PHASE 1: Essential UI (Week 3)
+## 🔴 MVP PHASE 1: Essential UI (Week 3) - UI-FIRST WITH MOCK DATA
+
+**STRATEGY UPDATE**: Frontend-first development with mock data layer, backend integration deferred to T015-T025
+
+### Mock Data Architecture
+
+**Data Adapter Pattern**: Clean separation between UI and data source
+
+```typescript
+interface DataAdapter {
+  getMenu(): Promise<WeeklyMenu>
+  addToCart(item: CartItem): Promise<void>
+  validatePostalCode(code: string): Promise<ValidationResult>
+}
+
+// Development: MockDataAdapter (localStorage/static data)
+// Production: APIDataAdapter (real API endpoints)
+```
+
+**Mock Data Sources**:
+
+- Static menu data with 6 sample meals (matches seed data from T014)
+- localStorage-based cart persistence
+- BC postal code validation logic
+- Guest authentication state handling
 
 ### Core Frontend Components (Days 9-12)
 
-- [ ] **T026** 🔴 Base layout and navigation components
+- [ ] **T026** 🔴 Base layout and navigation components **[MOCK DATA]**
   - Path: `src/components/layout/`, `src/app/layout.tsx`
   - Responsive header, mobile navigation, footer
+  - **MOCK INTEGRATION**: Guest/authenticated state handling, navigation context
   - **MOBILE TESTING**: 320px (mobile), 768px (tablet), 1024px (desktop) breakpoints
 
-- [ ] **T027** 🔴 Menu display components with bilingual support
+- [ ] **T027** 🔴 Menu display components with bilingual support **[MOCK DATA]**
   - Path: `src/components/menu/`
   - Menu grid, meal cards, category filters, bilingual text display
+  - **MOCK INTEGRATION**: Static menu data with 6 sample meals, category filtering
   - **MOBILE TESTING**: Touch-friendly meal cards, swipe gestures, responsive grid layout
 
-- [ ] **T028** 🔴 Shopping cart components
+- [ ] **T028** 🔴 Shopping cart components **[MOCK DATA]**
   - Path: `src/components/cart/`
   - Cart sidebar, item management, basic checkout flow
+  - **MOCK INTEGRATION**: localStorage-based cart persistence, quantity management
   - **MOBILE TESTING**: Mobile cart drawer, touch targets ≥44px, quantity controls
 
-- [ ] **T029** 🔴 Payment components with Stripe Elements
+- [ ] **T029** 🔴 Payment components with Stripe Elements **[MOCK DATA]**
   - Path: `src/components/payment/`
   - Payment form, card input, payment confirmation (one-time payments only)
+  - **MOCK INTEGRATION**: Stripe test mode, mock order creation, guest checkout
   - **MOBILE TESTING**: Mobile-optimized payment forms, secure input fields
 
-- [ ] **T030** 🔴 Homepage and menu browsing pages
+- [ ] **T030** 🔴 Homepage and menu browsing pages **[MOCK DATA]**
   - Path: `src/app/page.tsx`, `src/app/menu/page.tsx`
   - Landing page, postal code check, menu display, meal selection
+  - **MOCK INTEGRATION**: BC postal code validation logic, static menu display
   - **MOBILE TESTING**: Mobile-first layout, <3s load time on 3G, cross-device testing
 
 ### MVP Phase 1 Launch Preparation (Days 19-21)

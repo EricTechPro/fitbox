@@ -20,59 +20,72 @@ const config: Config = {
     extend: {
       // Premium Color System
       colors: {
-        border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
-        ring: 'hsl(var(--ring))',
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
+        border: 'var(--border)',
+        input: 'var(--input)',
+        ring: 'var(--ring)',
+        background: 'var(--background)',
+        foreground: 'var(--foreground)',
         
-        // Primary Brand Colors
+        // Primary Brand Colors - Signature Teal
         primary: {
-          50: 'hsl(var(--primary-50))',
-          100: 'hsl(var(--primary-100))',
-          200: 'hsl(var(--primary-200))',
-          300: 'hsl(var(--primary-300))',
-          400: 'hsl(var(--primary-400))',
-          500: 'hsl(var(--primary-500))',
-          600: 'hsl(var(--primary-600))',
-          700: 'hsl(var(--primary-700))',
-          800: 'hsl(var(--primary-800))',
-          900: 'hsl(var(--primary-900))',
-          950: 'hsl(var(--primary-950))',
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
+          50: 'hsl(240, 100%, 96%)',
+          100: 'hsl(178, 84%, 89%)',
+          200: 'hsl(180, 84%, 78%)',
+          300: 'hsl(180, 86%, 64%)',
+          400: 'hsl(180, 84%, 51%)',
+          500: 'hsl(173, 80%, 40%)',
+          600: 'hsl(172, 83%, 32%)',
+          700: 'hsl(172, 79%, 25%)',
+          800: 'hsl(172, 69%, 20%)',
+          900: 'hsl(172, 61%, 18%)',
+          950: 'hsl(172, 84%, 9%)',
+          DEFAULT: 'var(--primary)',
+          foreground: 'var(--primary-foreground)',
         },
-        
-        // Secondary/Accent Colors
+
+        // Secondary/Accent Colors - Warm Orange
         secondary: {
-          50: 'hsl(var(--secondary-50))',
-          100: 'hsl(var(--secondary-100))',
-          200: 'hsl(var(--secondary-200))',
-          300: 'hsl(var(--secondary-300))',
-          400: 'hsl(var(--secondary-400))',
-          500: 'hsl(var(--secondary-500))',
-          600: 'hsl(var(--secondary-600))',
-          700: 'hsl(var(--secondary-700))',
-          800: 'hsl(var(--secondary-800))',
-          900: 'hsl(var(--secondary-900))',
-          950: 'hsl(var(--secondary-950))',
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
+          50: 'hsl(33, 100%, 96%)',
+          100: 'hsl(34, 100%, 92%)',
+          200: 'hsl(32, 98%, 83%)',
+          300: 'hsl(31, 97%, 72%)',
+          400: 'hsl(27, 96%, 61%)',
+          500: 'hsl(24, 95%, 53%)',
+          600: 'hsl(20, 91%, 48%)',
+          700: 'hsl(17, 88%, 40%)',
+          800: 'hsl(15, 79%, 34%)',
+          900: 'hsl(15, 75%, 28%)',
+          950: 'hsl(13, 81%, 17%)',
+          DEFAULT: 'var(--secondary)',
+          foreground: 'var(--secondary-foreground)',
         },
-        
-        // Neutral Colors (warm-tinted)
+
+        // Neutral Colors - Warm Gray
         neutral: {
-          50: 'hsl(var(--neutral-50))',
-          100: 'hsl(var(--neutral-100))',
-          200: 'hsl(var(--neutral-200))',
-          300: 'hsl(var(--neutral-300))',
-          400: 'hsl(var(--neutral-400))',
-          500: 'hsl(var(--neutral-500))',
-          600: 'hsl(var(--neutral-600))',
-          700: 'hsl(var(--neutral-700))',
-          800: 'hsl(var(--neutral-800))',
-          900: 'hsl(var(--neutral-900))',
-          950: 'hsl(var(--neutral-950))',
+          50: 'hsl(37, 5%, 98%)',
+          100: 'hsl(44, 7%, 96%)',
+          200: 'hsl(37, 7%, 90%)',
+          300: 'hsl(36, 7%, 84%)',
+          400: 'hsl(25, 5%, 64%)',
+          500: 'hsl(25, 5%, 45%)',
+          600: 'hsl(25, 5%, 33%)',
+          700: 'hsl(24, 6%, 25%)',
+          800: 'hsl(24, 10%, 15%)',
+          900: 'hsl(24, 10%, 10%)',
+          950: 'hsl(27, 11%, 4%)',
+        },
+
+        // Asian-Inspired Accent Colors
+        jade: {
+          50: 'hsl(151, 55%, 91%)',
+          500: 'hsl(160, 84%, 39%)',
+          600: 'hsl(158, 95%, 30%)',
+        },
+
+        amber: {
+          50: 'hsl(48, 100%, 96%)',
+          500: 'hsl(43, 96%, 56%)',
+          600: 'hsl(37, 92%, 50%)',
         },
         
         // Status Colors
@@ -138,24 +151,24 @@ const config: Config = {
         
         // Shadcn compatibility colors
         destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
+          DEFAULT: 'var(--destructive)',
+          foreground: 'var(--destructive-foreground)',
         },
         muted: {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))',
+          DEFAULT: 'var(--muted)',
+          foreground: 'var(--muted-foreground)',
         },
         accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
+          DEFAULT: 'var(--accent)',
+          foreground: 'var(--accent-foreground)',
         },
         popover: {
-          DEFAULT: 'hsl(var(--popover))',
-          foreground: 'hsl(var(--popover-foreground))',
+          DEFAULT: 'var(--popover)',
+          foreground: 'var(--popover-foreground)',
         },
         card: {
-          DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))',
+          DEFAULT: 'var(--card)',
+          foreground: 'var(--card-foreground)',
         },
       },
       
@@ -188,8 +201,11 @@ const config: Config = {
       // Premium Shadows
       boxShadow: {
         'premium': 'var(--shadow-xl)',
-        'float': '0 20px 25px -5px rgba(9, 32, 92, 0.1), 0 10px 10px -5px rgba(9, 32, 92, 0.04)',
-        'glass': '0 8px 32px rgba(9, 32, 92, 0.08)',
+        'float': '0 20px 25px -5px rgba(28, 25, 23, 0.1), 0 10px 10px -5px rgba(28, 25, 23, 0.04)',
+        'glass': '0 8px 32px rgba(28, 25, 23, 0.08)',
+        'food': '0 10px 25px -5px rgba(20, 184, 166, 0.1), 0 8px 16px -6px rgba(249, 115, 22, 0.05)',
+        'glow-teal': '0 0 20px rgba(20, 184, 166, 0.3)',
+        'glow-orange': '0 0 20px rgba(249, 115, 22, 0.3)',
       },
       
       // Premium Animations

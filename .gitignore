@@ -69,4 +69,5 @@ Thumbs.db
 /playwright/.cache/
 
 # Husky
-.husky/_
+.husky/_.claude/
+.mcp.json
