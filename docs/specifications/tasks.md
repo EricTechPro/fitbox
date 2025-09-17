@@ -130,29 +130,36 @@
 
 ### Essential API Endpoints (Days 7-8)
 
-- [ ] **T020** 🔴 Contract test for menu and meal endpoints
+- [x] **T020** 🔴 Contract test for menu and meal endpoints ✅
   - Path: `tests/contract/menu-api.test.ts`
   - Test current menu retrieval, meal details, category filtering
+  - **COMPLETED**: Comprehensive contract tests for menu API with TDD approach
 
-- [ ] **T021** 🔴 Contract test for delivery zone validation
+- [x] **T021** 🔴 Contract test for delivery zone validation ✅
   - Path: `tests/contract/delivery-api.test.ts`
   - Test postal code validation, delivery fee calculation
+  - **COMPLETED**: Contract tests for delivery zone validation API
 
-- [ ] **T022** 🔴 Menu and meal API endpoints implementation
-  - Path: `src/app/api/menus/route.ts`, `src/app/api/meals/[id]/route.ts`
+- [x] **T022** 🔴 Contract test for user profile management ✅
+  - Path: `tests/contract/profile-api.test.ts`
+  - Test profile updates, address management, preferences
+  - **COMPLETED**: Contract tests for user profile and address management APIs
+  - **NOTE**: This was originally labeled as "Menu and meal API endpoints implementation" but has been completed as profile management tests
+
+- [x] **T023** 🔴 Menu and meal API endpoints implementation ✅
+  - Path: `src/app/api/menus/current/route.ts`, `src/app/api/meals/[id]/route.ts`
   - Current menu endpoint, meal details, search and filtering
+  - **COMPLETED**: Full implementation with pagination, caching, and security measures
 
-- [ ] **T023** 🔴 Delivery zone validation API endpoint
+- [x] **T024** 🔴 Delivery zone validation API endpoint ✅
   - Path: `src/app/api/delivery-zones/validate/route.ts`
   - Postal code validation, delivery zone lookup, fee calculation
+  - **COMPLETED**: Canadian postal code validation with Greater Vancouver Area support
 
-- [ ] **T024** 🔴 Shopping cart API endpoints with session persistence
-  - Path: `src/app/api/cart/route.ts`
-  - Cart CRUD operations, session-based storage, persistence across logins
-
-- [ ] **T025** 🔴 Order creation API endpoint (one-time orders only)
-  - Path: `src/app/api/orders/route.ts`
-  - **SIMPLIFIED**: One-time order creation, status updates (no subscription complexity)
+- [x] **T025** 🔴 User profile and address management endpoints ✅
+  - Path: `src/app/api/users/profile/route.ts`, `src/app/api/users/addresses/route.ts`
+  - Profile CRUD, address management, contact information
+  - **COMPLETED**: Profile management with transactions and comprehensive validation
 
 ### Bundle System & Subscription Features (Days 8-9)
 
@@ -289,29 +296,35 @@ The following tasks are moved to Phase 2:
 
 **CRITICAL: Contract tests must fail before implementing these endpoints**
 
-- [ ] **T020** [P] Contract test for menu and meal endpoints
+- [x] **T020** [P] Contract test for menu and meal endpoints ✅
   - Path: `tests/contract/menu-api.test.ts`
   - Test current menu retrieval, meal details, category filtering
+  - **COMPLETED**: Comprehensive contract tests for menu API with TDD approach
 
-- [ ] **T021** [P] Contract test for delivery zone validation
+- [x] **T021** [P] Contract test for delivery zone validation ✅
   - Path: `tests/contract/delivery-api.test.ts`
   - Test postal code validation, delivery fee calculation
+  - **COMPLETED**: Contract tests for delivery zone validation API
 
-- [ ] **T022** [P] Contract test for user profile management
+- [x] **T022** [P] Contract test for user profile management ✅
   - Path: `tests/contract/profile-api.test.ts`
   - Test profile updates, address management, preferences
+  - **COMPLETED**: Contract tests for user profile and address management APIs
 
-- [ ] **T023** [P] Menu and meal API endpoints implementation
-  - Path: `src/app/api/menus/route.ts`, `src/app/api/meals/[id]/route.ts`
+- [x] **T023** [P] Menu and meal API endpoints implementation ✅
+  - Path: `src/app/api/menus/current/route.ts`, `src/app/api/meals/[id]/route.ts`
   - Current menu endpoint, meal details, search and filtering
+  - **COMPLETED**: Full implementation with pagination, caching, and security measures
 
-- [ ] **T024** [P] Delivery zone validation API endpoint
+- [x] **T024** [P] Delivery zone validation API endpoint ✅
   - Path: `src/app/api/delivery-zones/validate/route.ts`
   - Postal code validation, delivery zone lookup, fee calculation
+  - **COMPLETED**: Canadian postal code validation with Greater Vancouver Area support
 
-- [ ] **T025** [P] User profile and address management endpoints
+- [x] **T025** [P] User profile and address management endpoints ✅
   - Path: `src/app/api/users/profile/route.ts`, `src/app/api/users/addresses/route.ts`
   - Profile CRUD, address management, contact information
+  - **COMPLETED**: Profile management with transactions and comprehensive validation
 
 - [ ] **T026** Shopping cart API endpoints with session persistence
   - Path: `src/app/api/cart/route.ts`
