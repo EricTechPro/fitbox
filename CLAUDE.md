@@ -169,5 +169,34 @@ tests/
 - **Business Requirements Update**: Updated meal deadlines, Vancouver delivery, loyalty points, customer service integration, removed gift cards
 
 <!-- MANUAL ADDITIONS START -->
-<!-- Add any manual additions here - they will be preserved during updates -->
+
+# DOCUMENTATION ORGANIZATION RULES - CRITICAL
+## Strict Documentation Structure - DO NOT VIOLATE
+
+### ALLOWED Documentation Locations ONLY:
+- `README.md` (project root - main entry point)
+- `docs/development/` (development guides)
+- `docs/design/` (design system and UI specs)
+- `docs/specifications/` (technical and business specs)
+- `docs/guides/` (user guides and troubleshooting)
+
+### FORBIDDEN - NEVER CREATE:
+- Any README files outside the designated structure
+- Root-level documentation files (CLAUDE.md, TESTING_GUIDE.md, etc.)
+- Scattered .md files in random directories
+- memory/, templates/, .claude/, design-docs/ directories
+- Any documentation outside the docs/ structure
+
+### Documentation Creation Rules:
+1. **BEFORE creating ANY .md file**: Check if it belongs in existing docs/ structure
+2. **NEVER create duplicate documentation** - update existing files instead
+3. **ALWAYS use the organized docs/ structure** established on 2025-09-16
+4. **IF unsure where documentation belongs**: Ask user for clarification
+5. **CONSOLIDATE related information** into existing organized files
+
+### Enforcement:
+- .gitignore blocks scattered documentation creation
+- Pre-commit hooks validate documentation structure
+- All documentation must follow the established hierarchy
+
 <!-- MANUAL ADDITIONS END -->

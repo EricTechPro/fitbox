@@ -21,7 +21,9 @@
     "tasks:complete": "node scripts/task-manager.js complete",
     "tasks:status": "node scripts/task-manager.js status",
     "tasks:next": "node scripts/task-manager.js next",
-    "tasks:summary": "node scripts/task-manager.js summary"
+    "tasks:summary": "node scripts/task-manager.js summary",
+    "docs:validate": "node scripts/validate-docs.js",
+    "docs:check": "node scripts/validate-docs.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
