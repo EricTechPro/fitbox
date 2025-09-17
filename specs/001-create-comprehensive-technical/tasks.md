@@ -108,25 +108,25 @@
 
 ### Basic Authentication (Days 5-6)
 
-- [ ] **T015** 🔴 Authentication configuration and setup
+- [x] **T015** 🔴 Authentication configuration and setup ✅
   - Path: `src/app/api/auth/[...nextauth]/route.ts`, `src/lib/auth.ts`
-  - NextAuth.js configuration, JWT strategy, session management
+  - **COMPLETED**: Enhanced NextAuth.js with security hardening (CSRF, rate limiting)
 
-- [ ] **T016** 🔴 Contract test for NextAuth.js authentication
+- [x] **T016** 🔴 Contract test for NextAuth.js authentication ✅
   - Path: `tests/contract/auth-api.test.ts`
-  - Test NextAuth.js email provider, session management, authentication flows
+  - **COMPLETED**: 21+ security test scenarios covering authentication flows
 
-- [ ] **T017** 🔴 NextAuth.js provider configuration and setup
+- [x] **T017** 🔴 NextAuth.js provider configuration and setup ✅
   - Path: `src/lib/auth-config.ts`, NextAuth.js providers
-  - Configure email provider, credentials provider, database adapter integration
+  - **COMPLETED**: Email provider, credentials provider, database adapter integration
 
-- [ ] **T018** 🔴 NextAuth.js email verification setup
+- [x] **T018** 🔴 NextAuth.js email verification setup ✅
   - Path: `src/lib/email-provider.ts`, email configuration
-  - **INCLUDED IN MVP**: Basic email verification using NextAuth.js email provider
+  - **COMPLETED**: Resend integration with SMTP fallback for reliability
 
-- [ ] **T019** 🔴 Authentication UI components and pages
+- [x] **T019** 🔴 Authentication UI components and pages ✅
   - Path: `src/app/(auth)/login/page.tsx`, `src/app/(auth)/register/page.tsx`
-  - Login form, registration form (simplified for MVP Phase 1)
+  - **COMPLETED**: Login/register forms with password strength indicators
 
 ### Essential API Endpoints (Days 7-8)
 
@@ -153,6 +153,26 @@
 - [ ] **T025** 🔴 Order creation API endpoint (one-time orders only)
   - Path: `src/app/api/orders/route.ts`
   - **SIMPLIFIED**: One-time order creation, status updates (no subscription complexity)
+
+### Bundle System & Subscription Features (Days 8-9)
+
+**STRATEGIC PRIORITY**: Bundle-first architecture for 300-400% revenue uplift
+
+- [ ] **T026.5** 🔴 Bundle pricing and subscription model implementation
+  - Path: `prisma/schema.prisma` (Subscription, BundlePrice models)
+  - Bundle options (6/8/10/12 meals), subscription discount (5%), billing cycles
+
+- [ ] **T027.5** 🔴 Deadline management and auto-default system
+  - Path: `src/lib/deadline-management.ts`, `src/lib/auto-defaults.ts`
+  - Tuesday/Saturday 6PM deadlines, auto-selection algorithm, Redis job queue
+
+- [ ] **T028.5** 🔴 Bundle selection API endpoints
+  - Path: `src/app/api/bundles/route.ts`, `src/app/api/subscriptions/route.ts`
+  - Bundle pricing, subscription creation, meal selection with deadlines
+
+- [ ] **T029.5** 🔴 Subscription management API
+  - Path: `src/app/api/subscriptions/[id]/route.ts`
+  - Pause/resume, bundle size changes, payment method updates
 
 ## 🔴 MVP PHASE 1: Essential UI (Week 3) - UI-FIRST WITH MOCK DATA
 

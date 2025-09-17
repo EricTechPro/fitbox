@@ -22,10 +22,10 @@ const getDatabaseConfig = () => {
   return {
     // Logging configuration
     log: isDevelopment
-      ? (['query', 'info', 'warn', 'error'] as const)
+      ? ['query', 'info', 'warn', 'error']
       : isTest
-      ? (['warn', 'error'] as const)
-      : (['error'] as const),
+      ? ['warn', 'error']
+      : ['error'],
     
     // Error formatting
     errorFormat: isDevelopment ? 'pretty' : 'minimal',
