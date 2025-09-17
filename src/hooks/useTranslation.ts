@@ -164,6 +164,79 @@ export function useFormattedTranslation() {
  * Helps prevent typos in translation paths at compile time
  */
 export const translationPaths = {
+  auth: {
+    // Header translations
+    welcomeBack: 'auth.welcomeBack' as const,
+    signInToAccount: 'auth.signInToAccount' as const,
+    welcomeToFitbox: 'auth.welcomeToFitbox' as const,
+    createAccount: 'auth.createAccount' as const,
+    signInWith: 'auth.signInWith' as const,
+
+    // Form field labels
+    email: 'auth.email' as const,
+    password: 'auth.password' as const,
+    firstName: 'auth.firstName' as const,
+    lastName: 'auth.lastName' as const,
+    phone: 'auth.phone' as const,
+    confirmPassword: 'auth.confirmPassword' as const,
+
+    // Placeholder text
+    emailPlaceholder: 'auth.emailPlaceholder' as const,
+    passwordPlaceholder: 'auth.passwordPlaceholder' as const,
+    firstNamePlaceholder: 'auth.firstNamePlaceholder' as const,
+    lastNamePlaceholder: 'auth.lastNamePlaceholder' as const,
+    phonePlaceholder: 'auth.phonePlaceholder' as const,
+
+    // Button text
+    signIn: 'auth.signIn' as const,
+    signUp: 'auth.signUp' as const,
+    signOut: 'auth.signOut' as const,
+    forgotPassword: 'auth.forgotPassword' as const,
+    resetPassword: 'auth.resetPassword' as const,
+    sendMagicLink: 'auth.sendMagicLink' as const,
+
+    // Alternative actions
+    orContinueWith: 'auth.orContinueWith' as const,
+    alreadyHaveAccount: 'auth.alreadyHaveAccount' as const,
+    hasAccount: 'auth.hasAccount' as const,
+    noAccount: 'auth.noAccount' as const,
+    backToSignIn: 'auth.backToSignIn' as const,
+
+    // Status messages
+    loading: 'auth.loading' as const,
+    signingIn: 'auth.signingIn' as const,
+    signingUp: 'auth.signingUp' as const,
+    sendingEmail: 'auth.sendingEmail' as const,
+
+    // Error messages
+    invalidCredentials: 'auth.invalidCredentials' as const,
+    passwordMismatch: 'auth.passwordMismatch' as const,
+    emailRequired: 'auth.emailRequired' as const,
+    passwordRequired: 'auth.passwordRequired' as const,
+    emailInvalid: 'auth.emailInvalid' as const,
+    passwordTooShort: 'auth.passwordTooShort' as const,
+    firstNameRequired: 'auth.firstNameRequired' as const,
+    lastNameRequired: 'auth.lastNameRequired' as const,
+
+    // Success messages
+    accountCreated: 'auth.accountCreated' as const,
+    passwordReset: 'auth.passwordReset' as const,
+    emailSent: 'auth.emailSent' as const,
+    signInSuccess: 'auth.signInSuccess' as const,
+
+    // Email verification
+    checkEmail: 'auth.checkEmail' as const,
+    emailSentMessage: 'auth.emailSentMessage' as const,
+    linkExpired: 'auth.linkExpired' as const,
+    resendEmail: 'auth.resendEmail' as const,
+
+    // OAuth providers
+    continueWithGoogle: 'auth.continueWithGoogle' as const,
+    continueWithGithub: 'auth.continueWithGithub' as const,
+    continueWithEmail: 'auth.continueWithEmail' as const,
+    signInWithEmailLink: 'auth.signInWithEmailLink' as const,
+  },
+
   cart: {
     title: 'cart.title' as const,
     itemsInCart: 'cart.itemsInCart' as const,

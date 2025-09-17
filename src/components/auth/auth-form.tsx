@@ -10,10 +10,9 @@ import { Mail } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Separator } from '@/components/ui/separator'
 import { ErrorBoundary, useErrorHandler } from '@/components/ui/error-boundary'
-import { useTranslation } from '@/hooks/useTranslation'
-import { AUTH_CONSTANTS, ERROR_MESSAGES } from '@/lib/constants'
+import { useTranslation, translationPaths } from '@/hooks/useTranslation'
+import { AUTH_CONSTANTS } from '@/lib/constants'
 
 import { AuthFormHeader } from './auth-form-header'
 import { AuthFormFooter } from './auth-form-footer'
@@ -72,7 +71,6 @@ export function AuthForm({ mode, className }: AuthFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [emailSent, setEmailSent] = useState(false)
-  const [providers, setProviders] = useState<any>(null)
   const [csrfToken, setCsrfToken] = useState<string>('')
 
   const callbackUrl = searchParams.get('callbackUrl') || '/'
@@ -137,7 +135,7 @@ export function AuthForm({ mode, className }: AuthFormProps) {
           }
         }
       } catch (error) {
-        console.error('Failed to initialize auth:', error)
+        // Failed to initialize auth
       }
     }
 
@@ -159,7 +157,7 @@ export function AuthForm({ mode, className }: AuthFormProps) {
         })
 
         if (result?.error) {
-          setError(ERROR_MESSAGES.AUTH.INVALID_CREDENTIALS)
+          setError(t(translationPaths.auth.invalidCredentials))
         } else if (result?.ok) {
           router.push(callbackUrl)
         }
@@ -202,50 +200,36 @@ export function AuthForm({ mode, className }: AuthFormProps) {
         })
 
         if (result?.error) {
-          setError('Failed to send email link')
+          setError(t(translationPaths.auth.linkExpired))
         } else {
           setEmailSent(true)
         }
       }
     } catch (err) {
       const error = err instanceof Error ? err : new Error('Unknown error')
-      handleError(error)
-      setError(ERROR_MESSAGES.GENERIC.INTERNAL_ERROR)
+      handleError.handleError(error)
+      setError(t(translationPaths.auth.invalidCredentials))
     } finally {
       setIsLoading(false)
     }
   }
 
-  /**
-   * Handle OAuth providers
-   */
-  const handleOAuthSignIn = async (provider: string) => {
-    try {
-      setIsLoading(true)
-      await signIn(provider, { callbackUrl })
-    } catch (err) {
-      const error = err instanceof Error ? err : new Error('OAuth error')
-      handleError(error)
-      setError('Failed to sign in with ' + provider)
-      setIsLoading(false)
-    }
-  }
 
   /**
-   * Display error messages
+   * Display error messages using translations
    */
   const getErrorMessage = () => {
     if (error) return error
     if (urlError) {
       switch (urlError) {
         case 'CredentialsSignin':
-          return 'Invalid email or password'
+          return t(translationPaths.auth.invalidCredentials)
         case 'SessionRequired':
-          return 'Your session has expired'
+          return t(translationPaths.auth.linkExpired)
         case 'AccessDenied':
-          return 'Access denied'
+          return t(translationPaths.auth.invalidCredentials)
         default:
-          return 'Something went wrong'
+          return t(translationPaths.auth.invalidCredentials)
       }
     }
     return null
@@ -264,12 +248,7 @@ export function AuthForm({ mode, className }: AuthFormProps) {
   }
 
   return (
-    <ErrorBoundary
-      onError={(error, errorInfo) => {
-        console.error('AuthForm error:', error, errorInfo)
-      }}
-      showErrorDetails={process.env.NODE_ENV === 'development'}
-    >
+    <ErrorBoundary>
       <Card className={className}>
         <AuthFormHeader mode={mode} />
 
@@ -287,10 +266,14 @@ export function AuthForm({ mode, className }: AuthFormProps) {
 
           {/* Submit Button */}
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? 'Loading...' : (
-              mode === 'signin' ? t('auth.signIn') :
-              mode === 'signup' ? t('auth.createAccount') :
-              'Send Magic Link'
+            {isLoading ? (
+              mode === 'signin' ? t(translationPaths.auth.signingIn) :
+              mode === 'signup' ? t(translationPaths.auth.signingUp) :
+              t(translationPaths.auth.sendingEmail)
+            ) : (
+              mode === 'signin' ? t(translationPaths.auth.signIn) :
+              mode === 'signup' ? t(translationPaths.auth.signUp) :
+              t(translationPaths.auth.sendMagicLink)
             )}
           </Button>
         </form>
@@ -304,7 +287,7 @@ export function AuthForm({ mode, className }: AuthFormProps) {
               </div>
               <div className="relative flex justify-center text-xs uppercase">
                 <span className="bg-background px-2 text-muted-foreground">
-                  {t('auth.orContinueWith')}
+                  {t(translationPaths.auth.orContinueWith)}
                 </span>
               </div>
             </div>
@@ -317,7 +300,7 @@ export function AuthForm({ mode, className }: AuthFormProps) {
               disabled={isLoading}
             >
               <Mail className="mr-2 h-4 w-4" />
-              Sign in with Email Link
+              {t(translationPaths.auth.signInWithEmailLink)}
             </Button>
           </>
         )}

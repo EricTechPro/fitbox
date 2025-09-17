@@ -2,19 +2,18 @@
 
 import React from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
+import { useSession, signOut } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,16 +23,67 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Badge } from '@/components/ui/badge'
-import { Menu, ShoppingCart, Globe, User } from 'lucide-react'
+import {
+  Menu,
+  ShoppingCart,
+  Globe,
+  User,
+  LogIn,
+  UserPlus,
+  Settings,
+  History,
+  LogOut,
+  Crown,
+  Zap
+} from 'lucide-react'
 import { useLanguageStore } from '@/stores/language-store'
 import { useCartStore, useCartItemCount } from '@/stores/cart-store'
 import { cn } from '@/lib/utils'
 
 export function Header() {
+  const { data: session } = useSession()
+  const router = useRouter()
   const { language, toggleLanguage } = useLanguageStore()
   const { toggleCart } = useCartStore()
   const cartItemCount = useCartItemCount()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
+  const [isSigningOut, setIsSigningOut] = React.useState(false)
+
+  // Premium auth action handlers
+  const handleSignIn = () => {
+    router.push('/login')
+  }
+
+  const handleSignUp = () => {
+    router.push('/register')
+  }
+
+  const handleSignOut = async () => {
+    setIsSigningOut(true)
+    try {
+      await signOut({ callbackUrl: '/' })
+    } catch (error) {
+      // Sign out error occurred
+    } finally {
+      setIsSigningOut(false)
+    }
+  }
+
+  const handleOrderHistory = () => {
+    if (session) {
+      router.push('/account/orders')
+    } else {
+      router.push('/login?redirect=/account/orders')
+    }
+  }
+
+  const handleSettings = () => {
+    if (session) {
+      router.push('/account/settings')
+    } else {
+      router.push('/login?redirect=/account/settings')
+    }
+  }
 
   const navigationItems = [
     {
@@ -118,42 +168,176 @@ export function Header() {
             <span className="sr-only">Shopping cart</span>
           </Button>
 
-          {/* User Account - Mock for now */}
+          {/* Premium User Account with Authentication */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+              <Button
+                variant="ghost"
+                className={cn(
+                  "relative h-8 w-8 rounded-full transition-all duration-200",
+                  "hover:ring-2 hover:ring-primary/20 hover:bg-primary/5",
+                  session && "ring-2 ring-primary/30"
+                )}
+              >
                 <Avatar className="h-8 w-8">
-                  <AvatarFallback>
-                    <User className="h-4 w-4" />
-                  </AvatarFallback>
+                  {session?.user?.image ? (
+                    <AvatarImage src={session.user.image} alt={session.user.name || 'User'} />
+                  ) : (
+                    <AvatarFallback className={cn(
+                      "transition-colors duration-200",
+                      session ? "bg-primary text-primary-foreground" : "bg-muted"
+                    )}>
+                      {session ? (
+                        session.user.firstName ? session.user.firstName[0].toUpperCase() :
+                        session.user.name ? session.user.name[0].toUpperCase() :
+                        session.user.email?.[0].toUpperCase()
+                      ) : (
+                        <User className="h-4 w-4" />
+                      )}
+                    </AvatarFallback>
+                  )}
                 </Avatar>
+                {/* Premium status indicator */}
+                {session && (
+                  <div className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-green-500 border-2 border-background" />
+                )}
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="end" forceMount>
-              <DropdownMenuLabel className="font-normal">
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">
-                    {language === 'en' ? 'Guest User' : '访客用户'}
-                  </p>
-                  <p className="text-xs leading-none text-muted-foreground">
-                    {language === 'en' ? 'Sign in to save preferences' : '登录以保存偏好设置'}
-                  </p>
-                </div>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                {language === 'en' ? 'Sign In' : '登录'}
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                {language === 'en' ? 'Create Account' : '创建账户'}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                {language === 'en' ? 'Order History' : '订单历史'}
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                {language === 'en' ? 'Settings' : '设置'}
-              </DropdownMenuItem>
+            <DropdownMenuContent className="w-64" align="end" forceMount>
+              {session ? (
+                // Authenticated User Menu
+                <>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none flex items-center gap-2">
+                        {session.user.firstName && session.user.lastName
+                          ? `${session.user.firstName} ${session.user.lastName}`
+                          : session.user.name || session.user.email
+                        }
+                        <Crown className="h-3 w-3 text-amber-500" />
+                      </p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {session.user.email}
+                      </p>
+                      <div className="flex items-center gap-1 mt-1">
+                        <Badge variant="secondary" className="text-xs px-2 py-0.5">
+                          <Zap className="h-3 w-3 mr-1" />
+                          {language === 'en' ? 'Member' : '会员'}
+                        </Badge>
+                      </div>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={handleOrderHistory}
+                    className="cursor-pointer group"
+                  >
+                    <History className="mr-2 h-4 w-4 group-hover:text-primary transition-colors" />
+                    {language === 'en' ? 'Order History' : '订单历史'}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={handleSettings}
+                    className="cursor-pointer group"
+                  >
+                    <Settings className="mr-2 h-4 w-4 group-hover:text-primary transition-colors" />
+                    {language === 'en' ? 'Settings' : '设置'}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={handleSignOut}
+                    disabled={isSigningOut}
+                    className="cursor-pointer text-red-600 focus:text-red-600 group"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    {isSigningOut
+                      ? (language === 'en' ? 'Signing out...' : '登出中...')
+                      : (language === 'en' ? 'Sign Out' : '登出')
+                    }
+                  </DropdownMenuItem>
+                </>
+              ) : (
+                // Guest User Menu with Premium Conversion UX
+                <>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">
+                        {language === 'en' ? 'Welcome to FitBox!' : '欢迎来到FitBox！'}
+                      </p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {language === 'en'
+                          ? 'Join our community for exclusive benefits'
+                          : '加入我们，享受专属优惠'
+                        }
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+
+                  {/* Premium Sign Up CTA */}
+                  <DropdownMenuItem
+                    onClick={handleSignUp}
+                    className="cursor-pointer group bg-primary/5 hover:bg-primary/10"
+                  >
+                    <UserPlus className="mr-2 h-4 w-4 text-primary" />
+                    <div className="flex flex-col flex-1">
+                      <span className="font-medium text-primary">
+                        {language === 'en' ? 'Create Account' : '创建账户'}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {language === 'en' ? '5% subscription discount' : '订阅享5%折扣'}
+                      </span>
+                    </div>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={handleSignIn}
+                    className="cursor-pointer group"
+                  >
+                    <LogIn className="mr-2 h-4 w-4 group-hover:text-primary transition-colors" />
+                    {language === 'en' ? 'Sign In' : '登录'}
+                  </DropdownMenuItem>
+
+                  <DropdownMenuSeparator />
+
+                  {/* Guest options with auth prompts */}
+                  <DropdownMenuItem
+                    onClick={handleOrderHistory}
+                    className="cursor-pointer group"
+                  >
+                    <History className="mr-2 h-4 w-4 group-hover:text-primary transition-colors" />
+                    <div className="flex flex-col flex-1">
+                      <span>{language === 'en' ? 'Order History' : '订单历史'}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {language === 'en' ? 'Sign in required' : '需要登录'}
+                      </span>
+                    </div>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={handleSettings}
+                    className="cursor-pointer group"
+                  >
+                    <Settings className="mr-2 h-4 w-4 group-hover:text-primary transition-colors" />
+                    <div className="flex flex-col flex-1">
+                      <span>{language === 'en' ? 'Account Settings' : '账户设置'}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {language === 'en' ? 'Sign in required' : '需要登录'}
+                      </span>
+                    </div>
+                  </DropdownMenuItem>
+
+                  {/* Beta access reminder */}
+                  <DropdownMenuSeparator />
+                  <div className="px-2 py-1.5">
+                    <p className="text-xs text-muted-foreground text-center">
+                      {language === 'en'
+                        ? '🚀 Limited beta: 10 spots/week'
+                        : '🚀 限量内测：每周10个名额'
+                      }
+                    </p>
+                  </div>
+                </>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
 

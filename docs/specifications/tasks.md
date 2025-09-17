@@ -257,6 +257,18 @@ interface DataAdapter {
     - Manual meal availability toggle (inventory override)
     - Basic analytics: daily order count, revenue, popular meals
 
+- [ ] **T034** 🔴 Critical content pages for business compliance
+  - Path: `src/app/about/page.tsx`, `src/app/how-it-works/page.tsx`
+  - **BUSINESS CRITICAL**: About Us and How It Works pages required for user trust and onboarding
+  - **CONTENT**: Company story, service explanation, delivery process, FAQ integration
+  - **MOBILE TESTING**: Mobile-optimized content layout, fast loading, accessibility
+
+- [ ] **T035** 🔴 Legal compliance pages
+  - Path: `src/app/privacy/page.tsx`, `src/app/terms/page.tsx`, `src/app/refund/page.tsx`
+  - **LEGAL REQUIREMENT**: Privacy Policy, Terms of Service, Refund Policy for business operation
+  - **CONTENT**: GDPR compliance, Vancouver business terms, clear refund processes
+  - **MOBILE TESTING**: Legal text formatting, scroll performance, accessibility compliance
+
 - [x] **T033** 🔴 Local deployment and testing ✅
   - Path: Local environment
   - Validate core ordering flow works end-to-end
@@ -264,7 +276,7 @@ interface DataAdapter {
 
 ---
 
-## 📋 MVP PHASE 1 SUMMARY (33 Tasks → 3 Weeks)
+## 📋 MVP PHASE 1 SUMMARY (35 Tasks → 3 Weeks)
 
 **GOAL**: Launch basic ordering capability for immediate business needs
 
@@ -333,6 +345,20 @@ The following tasks are moved to Phase 2:
 - [ ] **T027** Order creation and management API endpoints
   - Path: `src/app/api/orders/route.ts`, `src/app/api/orders/[id]/route.ts`
   - Order creation, status updates, cancellation handling
+
+### Customer Support & Information Pages (Phase 2)
+
+- [ ] **T034.5** 🟡 Customer support and information pages
+  - Path: `src/app/contact/page.tsx`, `src/app/faq/page.tsx`, `src/app/support/page.tsx`
+  - **CUSTOMER SERVICE**: Contact forms, FAQ database, support ticket system
+  - **CONTENT**: Vancouver contact info, delivery FAQ, customer service hours
+  - **MOBILE TESTING**: Touch-friendly forms, accessible content, fast loading
+
+- [ ] **T035.5** 🟡 Nutrition and allergen information pages
+  - Path: `src/app/nutrition/page.tsx`, `src/app/allergens/page.tsx`
+  - **FOOD SAFETY**: Comprehensive nutrition facts, allergen database, dietary filters
+  - **CONTENT**: Detailed meal nutritional info, allergen warnings, dietary preference filters
+  - **MOBILE TESTING**: Nutrition label formatting, allergen alerts, accessibility
 
 ## Phase 3.5: Frontend Components (Mobile-First MVP)
 

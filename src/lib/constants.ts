@@ -223,6 +223,35 @@ export const SUCCESS_MESSAGES = {
   },
 }
 
+// Authentication Constants
+export const AUTH_CONSTANTS = {
+  PROVIDERS: {
+    CREDENTIALS: 'credentials',
+    EMAIL: 'email',
+  },
+  ROUTES: {
+    SIGN_IN: '/login',
+    SIGN_UP: '/register',
+    ERROR: '/auth/error',
+    VERIFY_REQUEST: '/auth/verify-request',
+  },
+  SESSION: {
+    MAX_AGE: 30 * 24 * 60 * 60, // 30 days
+    JWT_MAX_AGE: 30 * 24 * 60 * 60, // 30 days
+  },
+  SECURITY: {
+    TIMING_ATTACK_PROTECTION_MS: 1000, // 1 second minimum delay
+  },
+  VALIDATION: {
+    PASSWORD_STRENGTH_THRESHOLDS: {
+      WEAK: 0,
+      FAIR: 2,
+      GOOD: 4,
+    },
+    DEBOUNCE_DELAY_MS: 300,
+  },
+}
+
 // Feature Flags (for gradual rollout)
 export const FEATURE_FLAGS = {
   GIFT_CARDS: false, // Phase 2 feature

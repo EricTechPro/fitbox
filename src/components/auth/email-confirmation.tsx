@@ -1,6 +1,6 @@
 'use client'
 
-import { useTranslation } from '@/hooks/useTranslation'
+import { useTranslation, translationPaths } from '@/hooks/useTranslation'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardContent } from '@/components/ui/card'
 import { Mail } from 'lucide-react'
@@ -19,9 +19,9 @@ export function EmailConfirmation({ onBack, className }: EmailConfirmationProps)
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
           <Mail className="h-6 w-6 text-green-600" />
         </div>
-        <h1 className="text-2xl font-semibold">{t('auth.checkEmail')}</h1>
+        <h1 className="text-2xl font-semibold">{t(translationPaths.auth.checkEmail)}</h1>
         <p className="text-sm text-muted-foreground">
-          {t('auth.verificationSent')}
+          {t(translationPaths.auth.emailSentMessage)}
         </p>
       </CardHeader>
       <CardContent>
@@ -30,7 +30,7 @@ export function EmailConfirmation({ onBack, className }: EmailConfirmationProps)
           className="w-full"
           onClick={onBack}
         >
-          Back to Sign In
+          {t(translationPaths.auth.backToSignIn)}
         </Button>
       </CardContent>
     </Card>

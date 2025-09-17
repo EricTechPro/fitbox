@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { User, Phone, Mail } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useTranslation } from '@/hooks/useTranslation'
+import { useTranslation, translationPaths } from '@/hooks/useTranslation'
 import { PasswordInput } from './password-input'
 import { PasswordStrengthIndicator } from './password-strength-indicator'
 import {
@@ -28,6 +28,10 @@ interface PasswordStrength {
   feedback: string[]
 }
 
+/**
+ * Authentication form fields component
+ * Renders different sets of fields based on the authentication mode
+ */
 export function AuthFormFields({ mode, form }: AuthFormFieldsProps) {
   const { t } = useTranslation()
   const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>({
@@ -37,6 +41,9 @@ export function AuthFormFields({ mode, form }: AuthFormFieldsProps) {
   })
   const [showPasswordStrength, setShowPasswordStrength] = useState(false)
 
+  /**
+   * Get field error message safely
+   */
   const getFieldError = (fieldName: string) => {
     return form.formState.errors[fieldName as keyof FormData]?.message
   }
@@ -46,13 +53,13 @@ export function AuthFormFields({ mode, form }: AuthFormFieldsProps) {
       {/* First Name Field (Sign Up Only) */}
       {mode === 'signup' && (
         <div className="space-y-2">
-          <Label htmlFor="firstName">{t('auth.firstName')}</Label>
+          <Label htmlFor="firstName">{t(translationPaths.auth.firstName)}</Label>
           <div className="relative">
             <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             <Input
               id="firstName"
               type="text"
-              placeholder="John"
+              placeholder={t(translationPaths.auth.firstNamePlaceholder)}
               className="pl-9"
               {...form.register('firstName')}
             />
@@ -66,13 +73,13 @@ export function AuthFormFields({ mode, form }: AuthFormFieldsProps) {
       {/* Last Name Field (Sign Up Only) */}
       {mode === 'signup' && (
         <div className="space-y-2">
-          <Label htmlFor="lastName">{t('auth.lastName')}</Label>
+          <Label htmlFor="lastName">{t(translationPaths.auth.lastName)}</Label>
           <div className="relative">
             <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             <Input
               id="lastName"
               type="text"
-              placeholder="Doe"
+              placeholder={t(translationPaths.auth.lastNamePlaceholder)}
               className="pl-9"
               {...form.register('lastName')}
             />
@@ -85,13 +92,13 @@ export function AuthFormFields({ mode, form }: AuthFormFieldsProps) {
 
       {/* Email Field */}
       <div className="space-y-2">
-        <Label htmlFor="email">{t('auth.email')}</Label>
+        <Label htmlFor="email">{t(translationPaths.auth.email)}</Label>
         <div className="relative">
           <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
             id="email"
             type="email"
-            placeholder="your@email.com"
+            placeholder={t(translationPaths.auth.emailPlaceholder)}
             className="pl-9"
             {...form.register('email')}
           />
@@ -104,13 +111,13 @@ export function AuthFormFields({ mode, form }: AuthFormFieldsProps) {
       {/* Phone Field (Sign Up Only) */}
       {mode === 'signup' && (
         <div className="space-y-2">
-          <Label htmlFor="phone">{t('auth.phone')} (Optional)</Label>
+          <Label htmlFor="phone">{t(translationPaths.auth.phone)} (Optional)</Label>
           <div className="relative">
             <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             <Input
               id="phone"
               type="tel"
-              placeholder="+1 (555) 123-4567"
+              placeholder={t(translationPaths.auth.phonePlaceholder)}
               className="pl-9"
               {...form.register('phone')}
             />
@@ -124,10 +131,10 @@ export function AuthFormFields({ mode, form }: AuthFormFieldsProps) {
       {/* Password Field (Not for Email Mode) */}
       {mode !== 'email' && (
         <div className="space-y-2">
-          <Label htmlFor="password">{t('auth.password')}</Label>
+          <Label htmlFor="password">{t(translationPaths.auth.password)}</Label>
           <PasswordInput
             id="password"
-            placeholder={t('auth.passwordPlaceholder')}
+            placeholder={t(translationPaths.auth.passwordPlaceholder)}
             error={getFieldError('password')}
             showStrengthIndicator={mode === 'signup'}
             onStrengthChange={(strength) => {
@@ -148,10 +155,10 @@ export function AuthFormFields({ mode, form }: AuthFormFieldsProps) {
       {/* Confirm Password Field (Sign Up Only) */}
       {mode === 'signup' && (
         <div className="space-y-2">
-          <Label htmlFor="confirmPassword">{t('auth.confirmPassword')}</Label>
+          <Label htmlFor="confirmPassword">{t(translationPaths.auth.confirmPassword)}</Label>
           <PasswordInput
             id="confirmPassword"
-            placeholder={t('auth.confirmPassword')}
+            placeholder={t(translationPaths.auth.passwordPlaceholder)}
             error={getFieldError('confirmPassword')}
             {...form.register('confirmPassword')}
           />
