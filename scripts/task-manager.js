@@ -15,10 +15,7 @@
 const fs = require('fs')
 const path = require('path')
 
-const TASKS_FILE = path.join(
-  __dirname,
-  '../specs/001-create-comprehensive-technical/tasks.md'
-)
+const TASKS_FILE = path.join(__dirname, '../docs/specifications/tasks.md')
 
 class TaskManager {
   constructor() {

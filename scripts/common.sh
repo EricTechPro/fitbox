@@ -27,7 +27,7 @@ check_feature_branch() {
 get_feature_dir() {
     local repo_root="$1"
     local branch="$2"
-    echo "$repo_root/specs/$branch"
+    echo "$repo_root/docs/specifications"
 }
 
 # Get all standard paths for a feature
@@ -41,11 +41,11 @@ get_feature_paths() {
     echo "REPO_ROOT='$repo_root'"
     echo "CURRENT_BRANCH='$current_branch'"
     echo "FEATURE_DIR='$feature_dir'"
-    echo "FEATURE_SPEC='$feature_dir/spec.md'"
-    echo "IMPL_PLAN='$feature_dir/plan.md'"
+    echo "FEATURE_SPEC='$feature_dir/comprehensive-feature-spec.md'"
+    echo "IMPL_PLAN='$feature_dir/technical-architecture.md'"
     echo "TASKS='$feature_dir/tasks.md'"
     echo "RESEARCH='$feature_dir/research.md'"
-    echo "DATA_MODEL='$feature_dir/data-model.md'"
+    echo "DATA_MODEL='$feature_dir/database-design.md'"
     echo "QUICKSTART='$feature_dir/quickstart.md'"
     echo "CONTRACTS_DIR='$feature_dir/contracts'"
 }

@@ -1,6 +1,6 @@
 # Tasks: FitBox Meal App MVP - Sequential Implementation
 
-**Input**: Design documents from `/specs/001-create-comprehensive-technical/`  
+**Input**: Design documents from `/docs/specifications/`  
 **Prerequisites**: plan.md, research.md, data-model.md, contracts/api-spec.yaml, quickstart.md
 
 ## Execution Flow (main)

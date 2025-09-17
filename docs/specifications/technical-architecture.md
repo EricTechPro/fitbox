@@ -1,7 +1,7 @@
 # Implementation Plan: FitBox Meal App - Asian Fusion Meal Delivery Platform
 
 **Branch**: `001-create-comprehensive-technical` | **Date**: 2025-09-11 | **Spec**: [spec.md](./spec.md)
-**Input**: Feature specification from `/specs/001-create-comprehensive-technical/spec.md`
+**Input**: Feature specification from `/docs/specifications/comprehensive-feature-spec.md`
 
 ## Execution Flow (/plan command scope)
 
@@ -90,13 +90,13 @@ _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 ### Documentation (this feature)
 
 ```
-specs/[###-feature]/
-├── plan.md              # This file (/plan command output)
-├── research.md          # Phase 0 output (/plan command)
-├── data-model.md        # Phase 1 output (/plan command)
-├── quickstart.md        # Phase 1 output (/plan command)
-├── contracts/           # Phase 1 output (/plan command)
-└── tasks.md             # Phase 2 output (/tasks command - NOT created by /plan)
+docs/specifications/
+├── technical-architecture.md    # This file (implementation plan)
+├── research.md                  # Technology research and decisions
+├── database-design.md           # Data model and schema design
+├── quickstart.md               # Development guide
+├── contracts/                  # API contracts and schemas
+└── tasks.md                   # Implementation tasks and progress
 ```
 
 ### Source Code (repository root)

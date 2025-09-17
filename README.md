@@ -131,7 +131,7 @@ npm run tasks:summary   # Generate phase-based report
 ## 🚀 Getting Started for New Developers
 
 1. **Read the [Development Guide](docs/development/README.md)** for coding standards
-2. **Check [Current Tasks](specs/001-create-comprehensive-technical/tasks.md)** for work priorities
+2. **Check [Current Tasks](docs/specifications/tasks.md)** for work priorities
 3. **Review [API Contracts](docs/specifications/api-contracts/)** for endpoint specifications
 4. **Run `npm run tasks:next`** to see immediate next steps
 

@@ -7,8 +7,8 @@ set -e
 
 REPO_ROOT=$(git rev-parse --show-toplevel)
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-FEATURE_DIR="$REPO_ROOT/specs/$CURRENT_BRANCH"
-NEW_PLAN="$FEATURE_DIR/plan.md"
+FEATURE_DIR="$REPO_ROOT/docs/specifications"
+NEW_PLAN="$FEATURE_DIR/technical-architecture.md"
 
 # Determine which agent context files to update
 CLAUDE_FILE="$REPO_ROOT/CLAUDE.md"
