@@ -13,14 +13,15 @@ Guidelines and templates for maintaining organized, high-quality documentation i
 - **`docs/design/`** - Design system, UI specifications, component library
 - **`docs/specifications/`** - Technical architecture, business requirements, API contracts
 - **`docs/guides/`** - User guides, troubleshooting, standards (like this file)
+- **`docs/testing/`** - Test execution reports, test results, and quality assurance documentation
 
 #### ❌ FORBIDDEN - NEVER CREATE:
 
-- Root-level documentation files (CLAUDE.md, TESTING_GUIDE.md, etc.)
+- Root-level documentation files (e.g., files previously moved: CLAUDE.md → `docs/development/claude-integration.md`, TESTING_GUIDE.md → `docs/development/testing-guide.md`)
 - Scattered README files outside designated structure
 - Random .md files in arbitrary directories
 - Directories: memory/, templates/, .claude/, design-docs/, dev-docs/
-- Temporary files: README*temp.md, draft*_.md, backup\__.md
+- Temporary files: README*temp.md, draft*\_.md, backup\_\_.md
 
 ### Before Creating ANY Documentation:
 
@@ -199,6 +200,69 @@ Brief description of who this guide is for and what it covers.
 - `contributing.md` - How to contribute to the project
 - `faq.md` - Frequently asked questions
 
+### 5. Testing Documentation (`docs/testing/`)
+
+#### Purpose: Test execution reports, test results, quality assurance documentation
+
+**Template Structure:**
+
+```markdown
+# [Test Report Title] - FitBox Testing Report
+
+Brief description of test scope and objectives.
+
+## Test Summary
+
+- Test date and duration
+- Testing environment
+- Tools used
+- Overall results
+
+## Test Results
+
+### Passed Tests
+
+- List of successful tests
+- Key validations confirmed
+
+### Failed Tests
+
+- List of failed tests
+- Error details
+- Reproduction steps
+
+## Issues Found
+
+### Critical Issues
+
+- Deployment blockers
+- Priority fixes required
+
+### Known Limitations
+
+- Expected behaviors
+- Future enhancements
+
+## Recommendations
+
+- Next steps
+- Priority actions
+- Follow-up testing needed
+
+## Test Evidence
+
+- Screenshots location
+- Log files
+- Performance metrics
+```
+
+#### Examples:
+
+- `00-COMPLETE-TEST-SUMMARY.md` - Executive testing overview
+- `playwright-mcp-test-report.md` - Automated test execution reports
+- `PRIORITY-FIXES.md` - Issue tracking and prioritization
+- `02-postal-code-validation-test.md` - Specific test case results
+
 ## ✏️ Writing Standards
 
 ### Content Quality
@@ -285,6 +349,7 @@ Before creating any documentation:
 | Business Requirements | `docs/specifications/`               | Specification |
 | Troubleshooting       | `docs/guides/`                       | Guide         |
 | Testing Procedures    | `docs/development/testing-guide.md`  | Development   |
+| Test Reports          | `docs/testing/`                      | Testing       |
 | Design System         | `docs/design/design-system.md`       | Design        |
 
 ## ❓ When in Doubt
@@ -325,5 +390,5 @@ Before creating any documentation:
 
 **Remember**: The goal is **organized, maintainable documentation** that scales with the project and serves all team members effectively.
 
-**Last Updated**: September 16, 2025
+**Last Updated**: 2025-11-01
 **Next Review**: When significant project structure changes occur

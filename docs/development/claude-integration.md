@@ -1,6 +1,14 @@
-# FitBox Meal App Development Guidelines
+# Claude AI Integration Guide
 
-Auto-generated from feature plan 001-create-comprehensive-technical. Last updated: 2025-09-11
+Configuration and guidelines for Claude Code AI assistant integration in the FitBox project.
+
+**Last Updated**: 2025-11-01
+
+---
+
+## Overview
+
+This guide covers how to effectively use Claude Code AI assistant for developing the FitBox meal delivery application. It includes development guidelines, code patterns, and AI-specific configurations.
 
 ## Active Technologies
 
@@ -109,6 +117,8 @@ tests/
 └── unit/          # Component and utility tests
 ```
 
+For complete testing documentation, see [Testing Guide](./testing-guide.md).
+
 ## Security Requirements
 
 - Input validation with Zod schemas for all API endpoints
@@ -163,17 +173,55 @@ tests/
 - **Weekly Menu**: 6 meal options per week (expanding in future)
 - **Inventory Prediction**: Historical data-based demand forecasting
 
-## Recent Changes
+## Database Development with Supabase MCP
 
-- **001-create-comprehensive-technical**: Added TypeScript + Next.js 14 + Prisma ORM + Stripe integration + Mobile-first responsive design
-- **Business Requirements Update**: Updated meal deadlines, Vancouver delivery, loyalty points, customer service integration, removed gift cards
+### Supabase MCP Server Setup
 
-<!-- MANUAL ADDITIONS START -->
+The project includes Supabase MCP (Model Context Protocol) server integration for direct database interaction during development. This allows Claude to execute SQL queries, inspect schemas, and assist with database operations.
 
-# DOCUMENTATION ORGANIZATION RULES - CRITICAL
-## Strict Documentation Structure - DO NOT VIOLATE
+For complete Supabase MCP setup instructions, see [Supabase MCP Setup Guide](./supabase-mcp-setup.md).
+
+#### Available MCP Tools
+
+With the Supabase MCP server configured, Claude can:
+
+- **Database Operations**:
+  - `list_tables` - View all tables and their schemas
+  - `execute_sql` - Run SQL queries (read-only by default)
+  - `apply_migration` - Apply database migrations
+  - `list_migrations` - View migration history
+
+- **Development Tools**:
+  - `get_project_url` - Get API URL for the project
+  - `get_anon_key` - Get anonymous API key
+  - `generate_typescript_types` - Generate TypeScript types from schema
+
+- **Debugging**:
+  - `get_logs` - View logs by service (postgres, api, auth, etc.)
+  - `get_advisors` - Get security and performance recommendations
+
+#### Usage Examples
+
+```bash
+# Ask Claude to:
+"Show me all tables in the database"
+"What's the schema for the subscriptions table?"
+"Execute a query to find all active subscriptions"
+"Generate TypeScript types for my database schema"
+"Check the recent postgres logs for errors"
+```
+
+### Security Notes
+
+- MCP server runs in read-only mode by default for safety
+- Never commit access tokens to version control
+- Use environment variables for sensitive credentials
+- Scope access to specific projects when possible
+
+## Documentation Organization
 
 ### ALLOWED Documentation Locations ONLY:
+
 - `README.md` (project root - main entry point)
 - `docs/development/` (development guides)
 - `docs/design/` (design system and UI specs)
@@ -181,22 +229,46 @@ tests/
 - `docs/guides/` (user guides and troubleshooting)
 
 ### FORBIDDEN - NEVER CREATE:
+
 - Any README files outside the designated structure
-- Root-level documentation files (CLAUDE.md, TESTING_GUIDE.md, etc.)
+- Root-level documentation files (beyond README.md)
 - Scattered .md files in random directories
 - memory/, templates/, .claude/, design-docs/ directories
 - Any documentation outside the docs/ structure
 
 ### Documentation Creation Rules:
+
 1. **BEFORE creating ANY .md file**: Check if it belongs in existing docs/ structure
 2. **NEVER create duplicate documentation** - update existing files instead
-3. **ALWAYS use the organized docs/ structure** established on 2025-09-16
+3. **ALWAYS use the organized docs/ structure** established on 2024-09-16
 4. **IF unsure where documentation belongs**: Ask user for clarification
 5. **CONSOLIDATE related information** into existing organized files
 
 ### Enforcement:
+
 - .gitignore blocks scattered documentation creation
 - Pre-commit hooks validate documentation structure
 - All documentation must follow the established hierarchy
 
-<!-- MANUAL ADDITIONS END -->
+For complete documentation standards, see [Documentation Standards Guide](../guides/documentation-standards.md).
+
+## Recent Changes
+
+- **2025-11-01**: Moved from root-level CLAUDE.md to docs/development/ for standards compliance
+- **2024-09-16**: Established documentation organization rules
+- **001-create-comprehensive-technical**: Added TypeScript + Next.js 14 + Prisma ORM + Stripe integration + Mobile-first responsive design
+- **Business Requirements Update**: Updated meal deadlines, Vancouver delivery, loyalty points, customer service integration, removed gift cards
+- **Supabase MCP Integration**: Added Supabase MCP server for enhanced database development experience
+
+## Related Documentation
+
+- [Testing Guide](./testing-guide.md) - Complete testing methodology and examples
+- [Supabase MCP Setup](./supabase-mcp-setup.md) - Database MCP server configuration
+- [MCP Setup](./mcp-setup.md) - General MCP server setup
+- [Documentation Standards](../guides/documentation-standards.md) - Documentation organization rules
+- [Technical Architecture](../specifications/technical-architecture.md) - System architecture overview
+- [Business Requirements](../specifications/business-requirements.md) - Complete business requirements
+
+---
+
+**For questions or issues**, refer to the related documentation above or check the main [README.md](../../README.md).

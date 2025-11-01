@@ -1,6 +1,6 @@
 # Quickstart Guide: FitBox Meal App
 
-**Date**: 2025-09-11  
+**Last Updated**: 2025-11-01  
 **Phase**: 1 - Design & Contracts  
 **Purpose**: End-to-end validation of core user journeys
 

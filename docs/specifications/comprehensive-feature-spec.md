@@ -1,6 +1,6 @@
 # Feature Specification: FitBox Meal App - Asian Fusion Meal Delivery Platform
 
-**Created**: 2025-09-11  
+**Last Updated**: 2025-11-01  
 **Status**: Draft  
 **Input**: User description: "Create comprehensive technical specifications for a meal delivery platform called FitBox Meal App, an Asian fusion meal subscription service"
 

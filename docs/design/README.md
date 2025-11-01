@@ -57,4 +57,4 @@ import { colors, spacing, typography } from '@/design-system/tokens'
 
 ---
 
-_Last updated: 2025-09-12_
+**Last Updated**: 2025-11-01
