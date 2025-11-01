@@ -2,6 +2,7 @@
 
 # Dependencies
 /node_modules
+/.playwright-mcp
 /.pnp
 .pnp.js
 yarn-debug.log*
