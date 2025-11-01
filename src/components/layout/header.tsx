@@ -6,13 +6,12 @@ import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  navigationMenuTriggerStyle,
-} from '@/components/ui/navigation-menu'
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   DropdownMenu,
@@ -34,7 +33,7 @@ import {
   History,
   LogOut,
   Crown,
-  Zap
+  Zap,
 } from 'lucide-react'
 import { useLanguageStore } from '@/stores/language-store'
 import { useCartStore, useCartItemCount } from '@/stores/cart-store'
@@ -89,48 +88,51 @@ export function Header() {
     {
       title: language === 'en' ? 'Menu' : '菜单',
       href: '/menu',
-      description: language === 'en' ? 'Browse our weekly meal selection' : '浏览本周餐点选择'
+      description:
+        language === 'en'
+          ? 'Browse our weekly meal selection'
+          : '浏览本周餐点选择',
     },
     {
       title: language === 'en' ? 'How It Works' : '使用方法',
       href: '/how-it-works',
-      description: language === 'en' ? 'Learn about our meal delivery service' : '了解我们的送餐服务'
+      description:
+        language === 'en'
+          ? 'Learn about our meal delivery service'
+          : '了解我们的送餐服务',
     },
     {
       title: language === 'en' ? 'About' : '关于我们',
       href: '/about',
-      description: language === 'en' ? 'Our story and mission' : '我们的故事和使命'
-    }
+      description:
+        language === 'en' ? 'Our story and mission' : '我们的故事和使命',
+    },
   ]
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur">
       <div className="container flex h-16 items-center justify-between px-4">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
             <span className="text-sm font-bold">FB</span>
           </div>
-          <span className="text-xl font-bold tracking-tight">
-            FitBox
-          </span>
+          <span className="text-xl font-bold tracking-tight">FitBox</span>
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-6">
-          <NavigationMenu>
-            <NavigationMenuList>
-              {navigationItems.map((item) => (
-                <NavigationMenuItem key={item.href}>
-                  <Link href={item.href} legacyBehavior passHref>
-                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                      {item.title}
-                    </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
-              ))}
-            </NavigationMenuList>
-          </NavigationMenu>
+        <div className="hidden items-center space-x-6 md:flex">
+          <nav className="flex items-center space-x-6">
+            {navigationItems.map(item => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-sm font-medium transition-colors hover:text-primary"
+              >
+                {item.title}
+              </Link>
+            ))}
+          </nav>
         </div>
 
         {/* Right side actions */}
@@ -158,7 +160,7 @@ export function Header() {
             <ShoppingCart className="h-5 w-5" />
             {cartItemCount > 0 && (
               <Badge
-                className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 text-xs flex items-center justify-center"
+                className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full p-0 text-xs"
                 variant="destructive"
                 data-testid="cart-badge"
               >
@@ -174,23 +176,34 @@ export function Header() {
               <Button
                 variant="ghost"
                 className={cn(
-                  "relative h-8 w-8 rounded-full transition-all duration-200",
-                  "hover:ring-2 hover:ring-primary/20 hover:bg-primary/5",
-                  session && "ring-2 ring-primary/30"
+                  'relative h-8 w-8 rounded-full transition-all duration-200',
+                  'hover:ring-primary/20 hover:bg-primary/5 hover:ring-2',
+                  session && 'ring-primary/30 ring-2'
                 )}
               >
                 <Avatar className="h-8 w-8">
                   {session?.user?.image ? (
-                    <AvatarImage src={session.user.image} alt={session.user.name || 'User'} />
+                    <AvatarImage
+                      src={session.user.image}
+                      alt={session.user.name || 'User'}
+                    />
                   ) : (
-                    <AvatarFallback className={cn(
-                      "transition-colors duration-200",
-                      session ? "bg-primary text-primary-foreground" : "bg-muted"
-                    )}>
+                    <AvatarFallback
+                      className={cn(
+                        'transition-colors duration-200',
+                        session
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-muted'
+                      )}
+                    >
                       {session ? (
-                        session.user.firstName ? session.user.firstName[0].toUpperCase() :
-                        session.user.name ? session.user.name[0].toUpperCase() :
-                        session.user.email?.[0].toUpperCase()
+                        session.user.firstName ? (
+                          session.user.firstName[0].toUpperCase()
+                        ) : session.user.lastName ? (
+                          `${session.user.firstName?.[0] || ''}${session.user.lastName[0]}`.toUpperCase()
+                        ) : (
+                          session.user.email?.[0].toUpperCase()
+                        )
                       ) : (
                         <User className="h-4 w-4" />
                       )}
@@ -199,7 +212,7 @@ export function Header() {
                 </Avatar>
                 {/* Premium status indicator */}
                 {session && (
-                  <div className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-green-500 border-2 border-background" />
+                  <div className="absolute -right-1 -top-1 h-3 w-3 rounded-full border-2 border-background bg-green-500" />
                 )}
               </Button>
             </DropdownMenuTrigger>
@@ -209,19 +222,21 @@ export function Header() {
                 <>
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none flex items-center gap-2">
+                      <p className="flex items-center gap-2 text-sm font-medium leading-none">
                         {session.user.firstName && session.user.lastName
                           ? `${session.user.firstName} ${session.user.lastName}`
-                          : session.user.name || session.user.email
-                        }
+                          : session.user.email}
                         <Crown className="h-3 w-3 text-amber-500" />
                       </p>
                       <p className="text-xs leading-none text-muted-foreground">
                         {session.user.email}
                       </p>
-                      <div className="flex items-center gap-1 mt-1">
-                        <Badge variant="secondary" className="text-xs px-2 py-0.5">
-                          <Zap className="h-3 w-3 mr-1" />
+                      <div className="mt-1 flex items-center gap-1">
+                        <Badge
+                          variant="secondary"
+                          className="px-2 py-0.5 text-xs"
+                        >
+                          <Zap className="mr-1 h-3 w-3" />
                           {language === 'en' ? 'Member' : '会员'}
                         </Badge>
                       </div>
@@ -230,29 +245,32 @@ export function Header() {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     onClick={handleOrderHistory}
-                    className="cursor-pointer group"
+                    className="group cursor-pointer"
                   >
-                    <History className="mr-2 h-4 w-4 group-hover:text-primary transition-colors" />
+                    <History className="mr-2 h-4 w-4 transition-colors group-hover:text-primary" />
                     {language === 'en' ? 'Order History' : '订单历史'}
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={handleSettings}
-                    className="cursor-pointer group"
+                    className="group cursor-pointer"
                   >
-                    <Settings className="mr-2 h-4 w-4 group-hover:text-primary transition-colors" />
+                    <Settings className="mr-2 h-4 w-4 transition-colors group-hover:text-primary" />
                     {language === 'en' ? 'Settings' : '设置'}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     onClick={handleSignOut}
                     disabled={isSigningOut}
-                    className="cursor-pointer text-red-600 focus:text-red-600 group"
+                    className="group cursor-pointer text-red-600 focus:text-red-600"
                   >
                     <LogOut className="mr-2 h-4 w-4" />
                     {isSigningOut
-                      ? (language === 'en' ? 'Signing out...' : '登出中...')
-                      : (language === 'en' ? 'Sign Out' : '登出')
-                    }
+                      ? language === 'en'
+                        ? 'Signing out...'
+                        : '登出中...'
+                      : language === 'en'
+                        ? 'Sign Out'
+                        : '登出'}
                   </DropdownMenuItem>
                 </>
               ) : (
@@ -261,13 +279,14 @@ export function Header() {
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
                       <p className="text-sm font-medium leading-none">
-                        {language === 'en' ? 'Welcome to FitBox!' : '欢迎来到FitBox！'}
+                        {language === 'en'
+                          ? 'Welcome to FitBox!'
+                          : '欢迎来到FitBox！'}
                       </p>
                       <p className="text-xs leading-none text-muted-foreground">
                         {language === 'en'
                           ? 'Join our community for exclusive benefits'
-                          : '加入我们，享受专属优惠'
-                        }
+                          : '加入我们，享受专属优惠'}
                       </p>
                     </div>
                   </DropdownMenuLabel>
@@ -276,24 +295,26 @@ export function Header() {
                   {/* Premium Sign Up CTA */}
                   <DropdownMenuItem
                     onClick={handleSignUp}
-                    className="cursor-pointer group bg-primary/5 hover:bg-primary/10"
+                    className="bg-primary/5 hover:bg-primary/10 group cursor-pointer"
                   >
                     <UserPlus className="mr-2 h-4 w-4 text-primary" />
-                    <div className="flex flex-col flex-1">
+                    <div className="flex flex-1 flex-col">
                       <span className="font-medium text-primary">
                         {language === 'en' ? 'Create Account' : '创建账户'}
                       </span>
                       <span className="text-xs text-muted-foreground">
-                        {language === 'en' ? '5% subscription discount' : '订阅享5%折扣'}
+                        {language === 'en'
+                          ? '5% subscription discount'
+                          : '订阅享5%折扣'}
                       </span>
                     </div>
                   </DropdownMenuItem>
 
                   <DropdownMenuItem
                     onClick={handleSignIn}
-                    className="cursor-pointer group"
+                    className="group cursor-pointer"
                   >
-                    <LogIn className="mr-2 h-4 w-4 group-hover:text-primary transition-colors" />
+                    <LogIn className="mr-2 h-4 w-4 transition-colors group-hover:text-primary" />
                     {language === 'en' ? 'Sign In' : '登录'}
                   </DropdownMenuItem>
 
@@ -302,11 +323,13 @@ export function Header() {
                   {/* Guest options with auth prompts */}
                   <DropdownMenuItem
                     onClick={handleOrderHistory}
-                    className="cursor-pointer group"
+                    className="group cursor-pointer"
                   >
-                    <History className="mr-2 h-4 w-4 group-hover:text-primary transition-colors" />
-                    <div className="flex flex-col flex-1">
-                      <span>{language === 'en' ? 'Order History' : '订单历史'}</span>
+                    <History className="mr-2 h-4 w-4 transition-colors group-hover:text-primary" />
+                    <div className="flex flex-1 flex-col">
+                      <span>
+                        {language === 'en' ? 'Order History' : '订单历史'}
+                      </span>
                       <span className="text-xs text-muted-foreground">
                         {language === 'en' ? 'Sign in required' : '需要登录'}
                       </span>
@@ -315,11 +338,13 @@ export function Header() {
 
                   <DropdownMenuItem
                     onClick={handleSettings}
-                    className="cursor-pointer group"
+                    className="group cursor-pointer"
                   >
-                    <Settings className="mr-2 h-4 w-4 group-hover:text-primary transition-colors" />
-                    <div className="flex flex-col flex-1">
-                      <span>{language === 'en' ? 'Account Settings' : '账户设置'}</span>
+                    <Settings className="mr-2 h-4 w-4 transition-colors group-hover:text-primary" />
+                    <div className="flex flex-1 flex-col">
+                      <span>
+                        {language === 'en' ? 'Account Settings' : '账户设置'}
+                      </span>
                       <span className="text-xs text-muted-foreground">
                         {language === 'en' ? 'Sign in required' : '需要登录'}
                       </span>
@@ -329,11 +354,10 @@ export function Header() {
                   {/* Beta access reminder */}
                   <DropdownMenuSeparator />
                   <div className="px-2 py-1.5">
-                    <p className="text-xs text-muted-foreground text-center">
+                    <p className="text-center text-xs text-muted-foreground">
                       {language === 'en'
                         ? '🚀 Limited beta: 10 spots/week'
-                        : '🚀 限量内测：每周10个名额'
-                      }
+                        : '🚀 限量内测：每周10个名额'}
                     </p>
                   </div>
                 </>
@@ -357,11 +381,11 @@ export function Header() {
                   </SheetTitle>
                 </SheetHeader>
                 <div className="mt-6 space-y-4">
-                  {navigationItems.map((item) => (
+                  {navigationItems.map(item => (
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="flex flex-col space-y-1 px-4 py-3 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground rounded-md"
+                      className="flex flex-col space-y-1 rounded-md px-4 py-3 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       <span>{item.title}</span>
@@ -371,7 +395,7 @@ export function Header() {
                     </Link>
                   ))}
 
-                  <div className="border-t pt-4 space-y-2">
+                  <div className="space-y-2 border-t pt-4">
                     <Button
                       variant="ghost"
                       className="w-full justify-start"

@@ -9,7 +9,7 @@ import type {
   CreateOrderRequest,
   Order,
   OrderStatus,
-  DeliveryValidation
+  DeliveryValidation,
 } from '@/types/common'
 
 export interface DataAdapter {
@@ -30,8 +30,25 @@ export interface DataAdapter {
   getOrderStatus(orderId: string): Promise<OrderStatus>
 }
 
-// Import mock adapter for initialization
+// Import adapters
 import { MockDataAdapter } from './mock-data/mock-adapter'
+import { ApiDataAdapter } from './api-adapter'
+
+// Export adapters for external use
+export { MockDataAdapter, ApiDataAdapter }
+
+// Re-export types for convenience
+export type {
+  WeeklyMenuWithMeals,
+  Meal,
+  MealCategory,
+  CartState,
+  CartItem,
+  CreateOrderRequest,
+  Order,
+  OrderStatus,
+  DeliveryValidation,
+}
 
 // Global adapter instance - can be swapped for production
 let _dataAdapter: DataAdapter | null = null
@@ -52,5 +69,5 @@ export function getDataAdapter(): DataAdapter {
 export const dataAdapter = new Proxy({} as DataAdapter, {
   get(target, prop) {
     return getDataAdapter()[prop as keyof DataAdapter]
-  }
+  },
 })

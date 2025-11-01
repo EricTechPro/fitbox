@@ -1,29 +1,28 @@
 'use client'
 
 import { useEffect } from 'react'
+import { useSession } from 'next-auth/react'
 import { useCartStore } from '@/stores/cart-store'
-import { LocalStorageCart } from '@/lib/mock-data/cart-storage'
-
-const cartStorage = new LocalStorageCart()
 
 export function useCartPersistence() {
+  const { data: session, status } = useSession()
   const cartStore = useCartStore()
 
-  // Load cart from localStorage on mount
+  // Load cart from API when user session is available
   useEffect(() => {
-    const savedItems = cartStorage.getItems()
-    if (savedItems.length > 0 && cartStore.items.length === 0) {
-      // Initialize cart with saved items only if cart is empty
-      savedItems.forEach(item => {
-        cartStore.addItem(item.meal, item.quantity)
-      })
-    }
-  }, [])
+    if (status === 'loading') return // Still loading session
 
-  // Persist cart to localStorage whenever it changes
-  useEffect(() => {
-    cartStorage.setItems(cartStore.items)
-  }, [cartStore.items])
+    if (session?.user) {
+      // User is authenticated - load cart from API
+      cartStore.loadCart()
+    } else {
+      // User is not authenticated - clear cart state
+      cartStore.setError(null)
+      cartStore.setLoading(false)
+      // For now, guest carts are not persisted
+      // TODO: Implement guest cart persistence with session tokens
+    }
+  }, [session, status])
 
   return null
 }

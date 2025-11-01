@@ -4,42 +4,57 @@
  */
 
 import { z } from 'zod'
-import { UserRole, OrderStatus, OrderType, MealCategory, UserSubscriptionStatus } from '@prisma/client'
+import { UserRole, OrderStatus, OrderType, MealCategory } from '@prisma/client'
 
 /**
  * Common validation patterns and utilities
  */
 export const CommonSchemas = {
   email: z.string().email('Invalid email format'),
-  
-  phone: z.string()
-    .regex(/^\+?[\d\s\-\(\)]+$/, 'Invalid phone number format')
+
+  phone: z
+    .string()
+    .regex(/^\+?[\d\s\-()]+$/, 'Invalid phone number format')
     .min(10, 'Phone number too short')
     .max(20, 'Phone number too long'),
-  
-  postalCode: z.string()
-    .regex(/^[A-Z]\d[A-Z]\s?\d[A-Z]\d$/, 'Invalid Canadian postal code format (A1A 1A1)')
+
+  postalCode: z
+    .string()
+    .regex(
+      /^[A-Z]\d[A-Z]\s?\d[A-Z]\d$/,
+      'Invalid Canadian postal code format (A1A 1A1)'
+    )
     .transform(code => code.replace(/\s+/g, ' ').toUpperCase()),
-  
-  bcPostalCode: z.string()
-    .regex(/^V\d[A-Z]\s?\d[A-Z]\d$/, 'Must be a valid BC postal code (starts with V)')
+
+  bcPostalCode: z
+    .string()
+    .regex(
+      /^V\d[A-Z]\s?\d[A-Z]\d$/,
+      'Must be a valid BC postal code (starts with V)'
+    )
     .transform(code => code.replace(/\s+/g, ' ').toUpperCase()),
-  
-  password: z.string()
+
+  password: z
+    .string()
     .min(8, 'Password must be at least 8 characters')
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Password must contain uppercase, lowercase, and number'),
-  
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+      'Password must contain uppercase, lowercase, and number'
+    ),
+
   uuid: z.string().uuid('Invalid UUID format'),
-  
+
   positiveNumber: z.number().positive('Must be a positive number'),
-  
+
   nonNegativeNumber: z.number().min(0, 'Must be non-negative'),
-  
-  futureDate: z.date()
+
+  futureDate: z
+    .date()
     .refine(date => date > new Date(), 'Date must be in the future'),
-  
-  pastOrPresentDate: z.date()
-    .refine(date => date <= new Date(), 'Date cannot be in the future')
+
+  pastOrPresentDate: z
+    .date()
+    .refine(date => date <= new Date(), 'Date cannot be in the future'),
 }
 
 /**
@@ -49,16 +64,18 @@ export const UserSchemas = {
   create: z.object({
     email: CommonSchemas.email,
     password: CommonSchemas.password,
-    firstName: z.string()
+    firstName: z
+      .string()
       .min(1, 'First name is required')
       .max(100, 'First name too long')
       .optional(),
-    lastName: z.string()
+    lastName: z
+      .string()
       .min(1, 'Last name is required')
       .max(100, 'Last name too long')
       .optional(),
     phone: CommonSchemas.phone.optional(),
-    role: z.nativeEnum(UserRole).default(UserRole.CUSTOMER)
+    role: z.nativeEnum(UserRole).default(UserRole.CUSTOMER),
   }),
 
   update: z.object({
@@ -66,18 +83,18 @@ export const UserSchemas = {
     firstName: z.string().min(1).max(100).optional(),
     lastName: z.string().min(1).max(100).optional(),
     phone: CommonSchemas.phone.optional(),
-    role: z.nativeEnum(UserRole).optional()
+    role: z.nativeEnum(UserRole).optional(),
   }),
 
   changePassword: z.object({
     currentPassword: z.string().min(1, 'Current password is required'),
-    newPassword: CommonSchemas.password
+    newPassword: CommonSchemas.password,
   }),
 
   login: z.object({
     email: CommonSchemas.email,
-    password: z.string().min(1, 'Password is required')
-  })
+    password: z.string().min(1, 'Password is required'),
+  }),
 }
 
 /**
@@ -87,12 +104,15 @@ export const AddressSchemas = {
   create: z.object({
     street: z.string().min(1, 'Street address is required').max(200),
     city: z.string().min(1, 'City is required').max(100),
-    province: z.string().length(2, 'Province must be 2 characters').default('BC'),
+    province: z
+      .string()
+      .length(2, 'Province must be 2 characters')
+      .default('BC'),
     postalCode: CommonSchemas.bcPostalCode,
     country: z.string().default('Canada'),
     apartmentNumber: z.string().max(20).optional(),
     deliveryInstructions: z.string().max(500).optional(),
-    isDefault: z.boolean().default(false)
+    isDefault: z.boolean().default(false),
   }),
 
   update: z.object({
@@ -103,8 +123,8 @@ export const AddressSchemas = {
     country: z.string().optional(),
     apartmentNumber: z.string().max(20).optional(),
     deliveryInstructions: z.string().max(500).optional(),
-    isDefault: z.boolean().optional()
-  })
+    isDefault: z.boolean().optional(),
+  }),
 }
 
 /**
@@ -116,7 +136,9 @@ export const MealSchemas = {
     nameZh: z.string().max(200).optional(),
     description: z.string().min(1, 'Description is required').max(1000),
     descriptionZh: z.string().max(1000).optional(),
-    ingredients: z.array(z.string().min(1)).min(1, 'At least one ingredient required'),
+    ingredients: z
+      .array(z.string().min(1))
+      .min(1, 'At least one ingredient required'),
     allergens: z.array(z.string()).default([]),
     nutritionInfo: z.object({
       calories: z.number().int().min(0),
@@ -124,7 +146,7 @@ export const MealSchemas = {
       carbs: z.number().min(0),
       fat: z.number().min(0),
       fiber: z.number().min(0),
-      sodium: z.number().min(0)
+      sodium: z.number().min(0),
     }),
     price: CommonSchemas.positiveNumber,
     category: z.nativeEnum(MealCategory),
@@ -134,7 +156,7 @@ export const MealSchemas = {
     isActive: z.boolean().default(true),
     imageUrl: z.string().url().optional(),
     inventoryCount: CommonSchemas.nonNegativeNumber.default(0),
-    lowStockThreshold: z.number().int().min(0).default(5)
+    lowStockThreshold: z.number().int().min(0).default(5),
   }),
 
   update: z.object({
@@ -144,14 +166,16 @@ export const MealSchemas = {
     descriptionZh: z.string().max(1000).optional(),
     ingredients: z.array(z.string().min(1)).optional(),
     allergens: z.array(z.string()).optional(),
-    nutritionInfo: z.object({
-      calories: z.number().int().min(0),
-      protein: z.number().min(0),
-      carbs: z.number().min(0),
-      fat: z.number().min(0),
-      fiber: z.number().min(0),
-      sodium: z.number().min(0)
-    }).optional(),
+    nutritionInfo: z
+      .object({
+        calories: z.number().int().min(0),
+        protein: z.number().min(0),
+        carbs: z.number().min(0),
+        fat: z.number().min(0),
+        fiber: z.number().min(0),
+        sodium: z.number().min(0),
+      })
+      .optional(),
     price: CommonSchemas.positiveNumber.optional(),
     category: z.nativeEnum(MealCategory).optional(),
     dietaryRestrictions: z.array(z.string()).optional(),
@@ -160,13 +184,13 @@ export const MealSchemas = {
     isActive: z.boolean().optional(),
     imageUrl: z.string().url().optional(),
     inventoryCount: CommonSchemas.nonNegativeNumber.optional(),
-    lowStockThreshold: z.number().int().min(0).optional()
+    lowStockThreshold: z.number().int().min(0).optional(),
   }),
 
   inventoryUpdate: z.object({
     inventoryCount: CommonSchemas.nonNegativeNumber,
-    operation: z.enum(['SET', 'ADD', 'SUBTRACT']).default('SET')
-  })
+    operation: z.enum(['SET', 'ADD', 'SUBTRACT']).default('SET'),
+  }),
 }
 
 /**
@@ -179,41 +203,53 @@ export const OrderSchemas = {
     unitPrice: CommonSchemas.positiveNumber,
     totalPrice: CommonSchemas.positiveNumber,
     mealName: z.string().min(1),
-    mealNameZh: z.string().optional()
+    mealNameZh: z.string().optional(),
   }),
 
-  create: z.object({
-    userId: CommonSchemas.uuid.optional(),
-    orderType: z.nativeEnum(OrderType).default(OrderType.ONE_TIME),
-    addressId: CommonSchemas.uuid.optional(),
-    deliveryDate: z.date(),
-    deliveryWindow: z.enum(['5:30 PM - 10:00 PM']),
-    deliveryNotes: z.string().max(500).optional(),
-    customerEmail: CommonSchemas.email.optional(),
-    customerPhone: CommonSchemas.phone.optional(),
-    customerName: z.string().max(200).optional(),
-    specialInstructions: z.string().max(1000).optional(),
-    items: z.array(z.lazy(() => OrderSchemas.item)).min(1, 'At least one item required')
-  }).refine(data => {
-    // Either userId or guest info must be provided
-    const hasUserId = !!data.userId
-    const hasGuestInfo = !!(data.customerEmail && data.customerPhone && data.customerName)
-    return hasUserId || hasGuestInfo
-  }, {
-    message: 'Either userId or complete guest information (email, phone, name) must be provided'
-  }),
+  create: z
+    .object({
+      userId: CommonSchemas.uuid.optional(),
+      orderType: z.nativeEnum(OrderType).default(OrderType.ONE_TIME),
+      addressId: CommonSchemas.uuid.optional(),
+      deliveryDate: z.date(),
+      deliveryWindow: z.enum(['5:30 PM - 10:00 PM']),
+      deliveryNotes: z.string().max(500).optional(),
+      customerEmail: CommonSchemas.email.optional(),
+      customerPhone: CommonSchemas.phone.optional(),
+      customerName: z.string().max(200).optional(),
+      specialInstructions: z.string().max(1000).optional(),
+      items: z
+        .array(z.lazy(() => OrderSchemas.item))
+        .min(1, 'At least one item required'),
+    })
+    .refine(
+      data => {
+        // Either userId or guest info must be provided
+        const hasUserId = !!data.userId
+        const hasGuestInfo = !!(
+          data.customerEmail &&
+          data.customerPhone &&
+          data.customerName
+        )
+        return hasUserId || hasGuestInfo
+      },
+      {
+        message:
+          'Either userId or complete guest information (email, phone, name) must be provided',
+      }
+    ),
 
   update: z.object({
     status: z.nativeEnum(OrderStatus).optional(),
     deliveryDate: z.date().optional(),
     deliveryWindow: z.enum(['5:30 PM - 10:00 PM']).optional(),
     deliveryNotes: z.string().max(500).optional(),
-    specialInstructions: z.string().max(1000).optional()
+    specialInstructions: z.string().max(1000).optional(),
   }),
 
   cancel: z.object({
-    reason: z.string().max(500).optional()
-  })
+    reason: z.string().max(500).optional(),
+  }),
 }
 
 /**
@@ -225,17 +261,18 @@ export const WeeklyMenuSchemas = {
     titleZh: z.string().max(200).optional(),
     weekStartDate: z.date(),
     isActive: z.boolean().default(true),
-    mealIds: z.array(CommonSchemas.uuid)
+    mealIds: z
+      .array(CommonSchemas.uuid)
       .min(1, 'At least one meal required')
-      .max(12, 'Maximum 12 meals per menu')
+      .max(12, 'Maximum 12 meals per menu'),
   }),
 
   update: z.object({
     title: z.string().min(1).max(200).optional(),
     titleZh: z.string().max(200).optional(),
     isActive: z.boolean().optional(),
-    mealIds: z.array(CommonSchemas.uuid).min(1).max(12).optional()
-  })
+    mealIds: z.array(CommonSchemas.uuid).min(1).max(12).optional(),
+  }),
 }
 
 /**
@@ -244,12 +281,13 @@ export const WeeklyMenuSchemas = {
 export const DeliveryZoneSchemas = {
   create: z.object({
     name: z.string().min(1, 'Zone name is required').max(100),
-    postalCodePrefixes: z.array(z.string().regex(/^V\d[A-Z]$/))
+    postalCodePrefixes: z
+      .array(z.string().regex(/^V\d[A-Z]$/))
       .min(1, 'At least one postal code prefix required'),
     deliveryFee: CommonSchemas.nonNegativeNumber,
     isActive: z.boolean().default(true),
     maxDeliveryDistance: z.number().min(0).optional(),
-    estimatedDeliveryTime: z.string().max(50).optional()
+    estimatedDeliveryTime: z.string().max(50).optional(),
   }),
 
   update: z.object({
@@ -258,12 +296,12 @@ export const DeliveryZoneSchemas = {
     deliveryFee: CommonSchemas.nonNegativeNumber.optional(),
     isActive: z.boolean().optional(),
     maxDeliveryDistance: z.number().min(0).optional(),
-    estimatedDeliveryTime: z.string().max(50).optional()
+    estimatedDeliveryTime: z.string().max(50).optional(),
   }),
 
   validatePostalCode: z.object({
-    postalCode: CommonSchemas.bcPostalCode
-  })
+    postalCode: CommonSchemas.bcPostalCode,
+  }),
 }
 
 /**
@@ -275,14 +313,17 @@ export const PaymentSchemas = {
     amount: CommonSchemas.positiveNumber,
     currency: z.string().length(3).default('CAD'),
     paymentMethodId: z.string().min(1),
-    description: z.string().max(500).optional()
+    description: z.string().max(500).optional(),
   }),
 
   loyaltyPointsRedemption: z.object({
     userId: CommonSchemas.uuid,
-    pointsToRedeem: z.number().int().min(1000, 'Minimum 1000 points required for redemption')
-      .multipleOf(1000, 'Points must be in multiples of 1000')
-  })
+    pointsToRedeem: z
+      .number()
+      .int()
+      .min(1000, 'Minimum 1000 points required for redemption')
+      .multipleOf(1000, 'Points must be in multiples of 1000'),
+  }),
 }
 
 /**
@@ -292,70 +333,87 @@ export const BusinessValidation = {
   /**
    * Validate delivery date and time constraints
    */
-  deliveryDateTime: z.object({
-    deliveryDate: z.date(),
-    currentTime: z.date().optional()
-  }).refine(data => {
-    const currentTime = data.currentTime || new Date()
-    const deliveryDate = data.deliveryDate
-    
-    // Check if delivery date is Sunday or Wednesday
-    const dayOfWeek = deliveryDate.getDay()
-    const isValidDay = dayOfWeek === 0 || dayOfWeek === 3 // 0 = Sunday, 3 = Wednesday
-    
-    if (!isValidDay) {
-      return false
-    }
-    
-    // Calculate order deadline
-    let deadline: Date
-    if (dayOfWeek === 0) { // Sunday delivery
-      deadline = new Date(deliveryDate)
-      deadline.setDate(deadline.getDate() - 5) // Previous Tuesday
-      deadline.setHours(18, 0, 0, 0) // 6:00 PM
-    } else { // Wednesday delivery
-      deadline = new Date(deliveryDate)
-      deadline.setDate(deadline.getDate() - 4) // Previous Saturday
-      deadline.setHours(18, 0, 0, 0) // 6:00 PM
-    }
-    
-    return currentTime <= deadline
-  }, {
-    message: 'Order deadline has passed or invalid delivery date'
-  }),
+  deliveryDateTime: z
+    .object({
+      deliveryDate: z.date(),
+      currentTime: z.date().optional(),
+    })
+    .refine(
+      data => {
+        const currentTime = data.currentTime || new Date()
+        const deliveryDate = data.deliveryDate
+
+        // Check if delivery date is Sunday or Wednesday
+        const dayOfWeek = deliveryDate.getDay()
+        const isValidDay = dayOfWeek === 0 || dayOfWeek === 3 // 0 = Sunday, 3 = Wednesday
+
+        if (!isValidDay) {
+          return false
+        }
+
+        // Calculate order deadline
+        let deadline: Date
+        if (dayOfWeek === 0) {
+          // Sunday delivery
+          deadline = new Date(deliveryDate)
+          deadline.setDate(deadline.getDate() - 5) // Previous Tuesday
+          deadline.setHours(18, 0, 0, 0) // 6:00 PM
+        } else {
+          // Wednesday delivery
+          deadline = new Date(deliveryDate)
+          deadline.setDate(deadline.getDate() - 4) // Previous Saturday
+          deadline.setHours(18, 0, 0, 0) // 6:00 PM
+        }
+
+        return currentTime <= deadline
+      },
+      {
+        message: 'Order deadline has passed or invalid delivery date',
+      }
+    ),
 
   /**
    * Validate meal bundle sizes
    */
-  bundleSize: z.number().int()
+  bundleSize: z
+    .number()
+    .int()
     .refine(size => [3, 6, 8, 10, 12].includes(size), {
-      message: 'Bundle size must be 3, 6, 8, 10, or 12 meals'
+      message: 'Bundle size must be 3, 6, 8, 10, or 12 meals',
     }),
 
   /**
    * Validate loyalty points calculation
    */
-  loyaltyPoints: z.object({
-    orderAmount: CommonSchemas.positiveNumber,
-    pointsEarned: z.number().int().min(0)
-  }).refine(data => {
-    const expectedPoints = Math.floor(data.orderAmount)
-    return data.pointsEarned === expectedPoints
-  }, {
-    message: 'Points earned must equal floor of order amount (1 dollar = 1 point)'
-  })
+  loyaltyPoints: z
+    .object({
+      orderAmount: CommonSchemas.positiveNumber,
+      pointsEarned: z.number().int().min(0),
+    })
+    .refine(
+      data => {
+        const expectedPoints = Math.floor(data.orderAmount)
+        return data.pointsEarned === expectedPoints
+      },
+      {
+        message:
+          'Points earned must equal floor of order amount (1 dollar = 1 point)',
+      }
+    ),
 }
 
 /**
  * Validation result types for better type inference
  */
-export type ValidationResult<T> = {
-  success: true
-  data: T
-} | {
-  success: false
-  errors: z.ZodError
-}
+export type ValidationResult<T> =
+  | {
+      success: true
+      data: T
+    }
+  | {
+      success: false
+      errors: z.ZodError
+    }
 
 /**
  * Safe validation wrapper that returns result instead of throwing
@@ -387,16 +445,18 @@ export function validateInput<T>(schema: z.ZodSchema<T>) {
 /**
  * Format validation errors for client response
  */
-export function formatValidationErrors(error: z.ZodError): Record<string, string[]> {
+export function formatValidationErrors(
+  error: z.ZodError
+): Record<string, string[]> {
   const formatted: Record<string, string[]> = {}
-  
-  error.errors.forEach((err) => {
+
+  error.issues.forEach(err => {
     const path = err.path.join('.')
     if (!formatted[path]) {
       formatted[path] = []
     }
     formatted[path].push(err.message)
   })
-  
+
   return formatted
 }

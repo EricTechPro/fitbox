@@ -11,20 +11,24 @@ interface RootLayoutProps {
   children: React.ReactNode
 }
 
-export function RootLayout({ children }: RootLayoutProps) {
-  // Initialize cart persistence
+function LayoutContent({ children }: RootLayoutProps) {
+  // Initialize cart persistence inside SessionProvider
   useCartPersistence()
 
   return (
+    <div className="flex min-h-screen flex-col">
+      <Header />
+      <main className="flex-1">{children}</main>
+      <Footer />
+      <CartSidebar />
+    </div>
+  )
+}
+
+export function RootLayout({ children }: RootLayoutProps) {
+  return (
     <SessionProvider>
-      <div className="min-h-screen flex flex-col">
-        <Header />
-        <main className="flex-1">
-          {children}
-        </main>
-        <Footer />
-        <CartSidebar />
-      </div>
+      <LayoutContent>{children}</LayoutContent>
     </SessionProvider>
   )
 }

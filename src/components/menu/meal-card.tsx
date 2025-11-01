@@ -12,9 +12,17 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Flame, Info } from 'lucide-react'
+import { Flame, Info, Loader2 } from 'lucide-react'
 import { useCartStore } from '@/stores/cart-store'
 import { useTranslation, translationPaths } from '@/hooks/useTranslation'
 import type { Meal } from '@/types/common'
@@ -25,13 +33,21 @@ interface MealCardProps {
 }
 
 export function MealCard({ meal, isLoading = false }: MealCardProps) {
-  const { addItem } = useCartStore()
+  const { addItem, isLoading: cartLoading } = useCartStore()
   const { t, tf, allergen, lang } = useTranslation()
   const [imageLoading, setImageLoading] = React.useState(true)
   const [isDetailOpen, setIsDetailOpen] = React.useState(false)
+  const [isAddingToCart, setIsAddingToCart] = React.useState(false)
 
-  const handleAddToCart = () => {
-    addItem(meal, 1)
+  const handleAddToCart = async () => {
+    if (isAddingToCart) return
+
+    setIsAddingToCart(true)
+    try {
+      await addItem(meal, 1)
+    } finally {
+      setIsAddingToCart(false)
+    }
   }
 
   if (isLoading) {
@@ -42,11 +58,14 @@ export function MealCard({ meal, isLoading = false }: MealCardProps) {
   const mealDescription = lang.isEnglish ? meal.description : meal.descriptionZh
 
   return (
-    <Card className="w-full max-w-sm mx-auto group hover:shadow-md transition-shadow duration-200" data-testid="meal-card">
+    <Card
+      className="group mx-auto w-full max-w-sm transition-shadow duration-200 hover:shadow-md"
+      data-testid="meal-card"
+    >
       <CardHeader className="pb-3">
-        <div className="aspect-video relative overflow-hidden rounded-lg bg-muted">
+        <div className="relative aspect-video overflow-hidden rounded-lg bg-muted">
           {imageLoading && (
-            <Skeleton className="absolute inset-0 w-full h-full" />
+            <Skeleton className="absolute inset-0 h-full w-full" />
           )}
           <Image
             src={meal.imageUrl}
@@ -59,12 +78,12 @@ export function MealCard({ meal, isLoading = false }: MealCardProps) {
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
           {meal.featured && (
-            <Badge className="absolute top-2 left-2" variant="destructive">
+            <Badge className="absolute left-2 top-2" variant="destructive">
               {t(translationPaths.actions.featured)}
             </Badge>
           )}
           {meal.isSpicy && (
-            <div className="absolute top-2 right-2">
+            <div className="absolute right-2 top-2">
               <Flame className="h-5 w-5 text-orange-500" />
             </div>
           )}
@@ -74,11 +93,9 @@ export function MealCard({ meal, isLoading = false }: MealCardProps) {
       <CardContent className="space-y-3">
         <div>
           <CardTitle className="text-lg font-semibold leading-tight">
-            <span lang={lang.isEnglish ? 'en' : 'zh'}>
-              {mealName}
-            </span>
+            <span lang={lang.isEnglish ? 'en' : 'zh'}>{mealName}</span>
           </CardTitle>
-          <CardDescription className="mt-1 text-sm line-clamp-2">
+          <CardDescription className="mt-1 line-clamp-2 text-sm">
             {mealDescription}
           </CardDescription>
         </div>
@@ -90,11 +107,11 @@ export function MealCard({ meal, isLoading = false }: MealCardProps) {
           <Dialog open={isDetailOpen} onOpenChange={setIsDetailOpen}>
             <DialogTrigger asChild>
               <Button variant="ghost" size="sm">
-                <Info className="h-4 w-4 mr-1" />
+                <Info className="mr-1 h-4 w-4" />
                 {t(translationPaths.actions.details)}
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+            <DialogContent className="max-h-[90vh] max-w-lg overflow-y-auto">
               <DialogHeader>
                 <DialogTitle lang={lang.isEnglish ? 'en' : 'zh'}>
                   {mealName}
@@ -104,7 +121,7 @@ export function MealCard({ meal, isLoading = false }: MealCardProps) {
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
-                <div className="aspect-video relative rounded-lg overflow-hidden">
+                <div className="relative aspect-video overflow-hidden rounded-lg">
                   <Image
                     src={meal.imageUrl}
                     alt={mealName}
@@ -118,18 +135,26 @@ export function MealCard({ meal, isLoading = false }: MealCardProps) {
                   </p>
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-2">
+                  <h4 className="mb-2 font-semibold">
                     {t(translationPaths.nutrition.nutritionalInfo)}
                   </h4>
                   <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div>{t(translationPaths.nutrition.calories)}: {meal.calories}</div>
-                    <div>{t(translationPaths.nutrition.protein)}: {meal.protein}g</div>
-                    <div>{t(translationPaths.nutrition.carbs)}: {meal.carbs}g</div>
-                    <div>{t(translationPaths.nutrition.fat)}: {meal.fat}g</div>
+                    <div>
+                      {t(translationPaths.nutrition.calories)}: {meal.calories}
+                    </div>
+                    <div>
+                      {t(translationPaths.nutrition.protein)}: {meal.protein}g
+                    </div>
+                    <div>
+                      {t(translationPaths.nutrition.carbs)}: {meal.carbs}g
+                    </div>
+                    <div>
+                      {t(translationPaths.nutrition.fat)}: {meal.fat}g
+                    </div>
                   </div>
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-2">
+                  <h4 className="mb-2 font-semibold">
                     {t(translationPaths.nutrition.ingredients)}
                   </h4>
                   <p className="text-sm text-muted-foreground">
@@ -138,11 +163,11 @@ export function MealCard({ meal, isLoading = false }: MealCardProps) {
                 </div>
                 {meal.allergens.length > 0 && (
                   <div>
-                    <h4 className="font-semibold mb-2">
+                    <h4 className="mb-2 font-semibold">
                       {t(translationPaths.nutrition.allergens)}
                     </h4>
                     <div className="flex flex-wrap gap-1">
-                      {meal.allergens.map((allergenName) => (
+                      {meal.allergens.map(allergenName => (
                         <Badge key={allergenName} variant="secondary">
                           {allergen(allergenName)}
                         </Badge>
@@ -152,11 +177,14 @@ export function MealCard({ meal, isLoading = false }: MealCardProps) {
                 )}
               </div>
               <DialogFooter>
-                <Button onClick={handleAddToCart} className="w-full" disabled={meal.inventory === 0}>
+                <Button
+                  onClick={handleAddToCart}
+                  className="w-full"
+                  disabled={meal.inventory === 0}
+                >
                   {meal.inventory === 0
                     ? t(translationPaths.actions.outOfStock)
-                    : `${t(translationPaths.actions.addToCart)} - $${meal.price.toFixed(2)}`
-                  }
+                    : `${t(translationPaths.actions.addToCart)} - $${meal.price.toFixed(2)}`}
                 </Button>
               </DialogFooter>
             </DialogContent>
@@ -166,7 +194,7 @@ export function MealCard({ meal, isLoading = false }: MealCardProps) {
         {/* Allergens */}
         {meal.allergens.length > 0 && (
           <div className="flex flex-wrap gap-1">
-            {meal.allergens.slice(0, 3).map((allergenName) => (
+            {meal.allergens.slice(0, 3).map(allergenName => (
               <Badge key={allergenName} variant="outline" className="text-xs">
                 {allergen(allergenName)}
               </Badge>
@@ -191,12 +219,18 @@ export function MealCard({ meal, isLoading = false }: MealCardProps) {
         <Button
           className="w-full"
           onClick={handleAddToCart}
-          disabled={meal.inventory === 0}
+          disabled={meal.inventory === 0 || isAddingToCart || cartLoading}
         >
-          {meal.inventory === 0
-            ? t(translationPaths.actions.outOfStock)
-            : t(translationPaths.actions.addToCart)
-          }
+          {isAddingToCart ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              {lang.isEnglish ? 'Adding...' : '添加中...'}
+            </>
+          ) : meal.inventory === 0 ? (
+            t(translationPaths.actions.outOfStock)
+          ) : (
+            t(translationPaths.actions.addToCart)
+          )}
         </Button>
       </CardFooter>
     </Card>
@@ -205,7 +239,7 @@ export function MealCard({ meal, isLoading = false }: MealCardProps) {
 
 export function MealCardSkeleton() {
   return (
-    <Card className="w-full max-w-sm mx-auto">
+    <Card className="mx-auto w-full max-w-sm">
       <CardHeader className="pb-3">
         <Skeleton className="aspect-video w-full rounded-lg" />
       </CardHeader>
