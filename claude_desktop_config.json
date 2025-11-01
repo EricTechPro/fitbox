@@ -1,0 +1,28 @@
+{
+  "mcpServers": {
+    "supabase-fitbox": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@supabase/mcp-server-supabase@latest",
+        "--read-only",
+        "--project-ref=wgvtdqtmgbnsvrvblprx"
+      ],
+      "env": {
+        "SUPABASE_ACCESS_TOKEN": "sbp_7feca1fc6cedcd44e2d4b84554eb61fddff4cbc9"
+      }
+    },
+    "shadcn": {
+      "command": "npx",
+      "args": ["shadcn-mcp"]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@executeautomation/playwright-mcp-server"],
+      "env": {
+        "PLAYWRIGHT_HEADLESS": "false",
+        "PLAYWRIGHT_BROWSER": "chromium"
+      }
+    }
+  }
+}
