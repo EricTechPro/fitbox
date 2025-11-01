@@ -1,4 +1,10 @@
-import { PrismaClient, UserRole, MealCategory, OrderStatus, PaymentStatus } from '@prisma/client'
+import {
+  PrismaClient,
+  UserRole,
+  MealCategory,
+  OrderStatus,
+  PaymentStatus,
+} from '@prisma/client'
 import bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
@@ -42,7 +48,10 @@ async function main() {
     },
   })
 
-  console.log('✅ Created users:', { adminUser: adminUser.email, testUser: testUser.email })
+  console.log('✅ Created users:', {
+    adminUser: adminUser.email,
+    testUser: testUser.email,
+  })
 
   // Create delivery zones for Greater Vancouver Area
   console.log('🚚 Creating delivery zones...')
@@ -70,7 +79,16 @@ async function main() {
     prisma.deliveryZone.create({
       data: {
         name: 'Burnaby',
-        postalCodeList: ['V3J', 'V3N', 'V5A', 'V5B', 'V5C', 'V5E', 'V5G', 'V5H'],
+        postalCodeList: [
+          'V3J',
+          'V3N',
+          'V5A',
+          'V5B',
+          'V5C',
+          'V5E',
+          'V5G',
+          'V5H',
+        ],
         deliveryFee: 6.99,
         deliveryDays: ['SUNDAY', 'WEDNESDAY'],
         isActive: true,
@@ -80,7 +98,16 @@ async function main() {
     prisma.deliveryZone.create({
       data: {
         name: 'Surrey',
-        postalCodeList: ['V3R', 'V3S', 'V3T', 'V3V', 'V3W', 'V3X', 'V4A', 'V4B'],
+        postalCodeList: [
+          'V3R',
+          'V3S',
+          'V3T',
+          'V3V',
+          'V3W',
+          'V3X',
+          'V4A',
+          'V4B',
+        ],
         deliveryFee: 9.99,
         deliveryDays: ['SUNDAY', 'WEDNESDAY'],
         isActive: true,
@@ -89,7 +116,10 @@ async function main() {
     }),
   ])
 
-  console.log('✅ Created delivery zones:', deliveryZones.map(z => z.name))
+  console.log(
+    '✅ Created delivery zones:',
+    deliveryZones.map(z => z.name)
+  )
 
   // Create test address
   console.log('🏠 Creating test address...')
@@ -117,10 +147,12 @@ async function main() {
       data: {
         name: 'Teriyaki Chicken Bowl',
         nameZh: '照燒雞肉飯',
-        description: 'Grilled chicken thigh with teriyaki glaze, steamed jasmine rice, broccoli, and edamame',
+        description:
+          'Grilled chicken thigh with teriyaki glaze, steamed jasmine rice, broccoli, and edamame',
         category: MealCategory.RICE_BASED,
         price: 17.99,
-        imageUrl: '/images/meals/teriyaki-chicken-bowl.jpg',
+        imageUrl:
+          'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=600&fit=crop&crop=center',
         imageAlt: 'Teriyaki chicken bowl with rice and vegetables',
         calories: 580,
         protein: 35.5,
@@ -142,10 +174,12 @@ async function main() {
       data: {
         name: 'Korean BBQ Beef Bowl',
         nameZh: '韓式烤牛肉飯',
-        description: 'Marinated bulgogi beef with sesame rice, kimchi, pickled vegetables, and gochujang sauce',
+        description:
+          'Marinated bulgogi beef with sesame rice, kimchi, pickled vegetables, and gochujang sauce',
         category: MealCategory.RICE_BASED,
         price: 19.99,
-        imageUrl: '/images/meals/korean-bbq-beef-bowl.jpg',
+        imageUrl:
+          'https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=800&h=600&fit=crop&crop=center',
         imageAlt: 'Korean BBQ beef bowl with kimchi and vegetables',
         calories: 640,
         protein: 42.1,
@@ -169,10 +203,12 @@ async function main() {
       data: {
         name: 'Spicy Ramen with Pork Belly',
         nameZh: '辣味豚骨拉麵',
-        description: 'Rich tonkotsu broth with handmade ramen noodles, braised pork belly, soft-boiled egg, and vegetables',
+        description:
+          'Rich tonkotsu broth with handmade ramen noodles, braised pork belly, soft-boiled egg, and vegetables',
         category: MealCategory.NOODLE_SOUPS,
         price: 18.99,
-        imageUrl: '/images/meals/spicy-ramen-pork-belly.jpg',
+        imageUrl:
+          'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800&h=600&fit=crop&crop=center',
         imageAlt: 'Spicy ramen bowl with pork belly and egg',
         calories: 720,
         protein: 38.9,
@@ -194,10 +230,12 @@ async function main() {
       data: {
         name: 'Vegetarian Pho',
         nameZh: '素食越南河粉',
-        description: 'Clear vegetable broth with rice noodles, tofu, mushrooms, bean sprouts, herbs, and lime',
+        description:
+          'Clear vegetable broth with rice noodles, tofu, mushrooms, bean sprouts, herbs, and lime',
         category: MealCategory.NOODLE_SOUPS,
         price: 16.99,
-        imageUrl: '/images/meals/vegetarian-pho.jpg',
+        imageUrl:
+          'https://images.unsplash.com/photo-1591814468924-caf88d1232e1?w=800&h=600&fit=crop&crop=center',
         imageAlt: 'Vegetarian pho with tofu and fresh herbs',
         calories: 480,
         protein: 18.3,
@@ -221,10 +259,12 @@ async function main() {
       data: {
         name: 'Miso Carbonara',
         nameZh: '味噌卡邦尼意粉',
-        description: 'East-meets-West fusion pasta with miso cream sauce, pancetta, parmesan, and black pepper',
+        description:
+          'East-meets-West fusion pasta with miso cream sauce, pancetta, parmesan, and black pepper',
         category: MealCategory.PASTA_FUSION,
         price: 18.99,
-        imageUrl: '/images/meals/miso-carbonara.jpg',
+        imageUrl:
+          'https://images.unsplash.com/photo-1621996346565-e3dbc353d2e5?w=800&h=600&fit=crop&crop=center',
         imageAlt: 'Miso carbonara pasta with pancetta and parmesan',
         calories: 650,
         protein: 28.7,
@@ -246,10 +286,12 @@ async function main() {
       data: {
         name: 'Laksa Mac & Cheese',
         nameZh: '叻沙芝士通粉',
-        description: 'Creamy macaroni with laksa-spiced cheese sauce, prawns, bean sprouts, and crispy shallots',
+        description:
+          'Creamy macaroni with laksa-spiced cheese sauce, prawns, bean sprouts, and crispy shallots',
         category: MealCategory.PASTA_FUSION,
         price: 17.99,
-        imageUrl: '/images/meals/laksa-mac-cheese.jpg',
+        imageUrl:
+          'https://images.unsplash.com/photo-1574894709920-11b28e7367e3?w=800&h=600&fit=crop&crop=center',
         imageAlt: 'Laksa-flavored mac and cheese with prawns',
         calories: 590,
         protein: 26.5,
@@ -273,10 +315,12 @@ async function main() {
       data: {
         name: 'Honey Glazed Salmon',
         nameZh: '蜂蜜烤三文魚',
-        description: 'Atlantic salmon with honey soy glaze, quinoa pilaf, roasted vegetables, and citrus aioli',
+        description:
+          'Atlantic salmon with honey soy glaze, quinoa pilaf, roasted vegetables, and citrus aioli',
         category: MealCategory.PROTEIN_SIDES,
         price: 22.99,
-        imageUrl: '/images/meals/honey-glazed-salmon.jpg',
+        imageUrl:
+          'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=800&h=600&fit=crop&crop=center',
         imageAlt: 'Honey glazed salmon with quinoa and vegetables',
         calories: 520,
         protein: 44.2,
@@ -298,10 +342,12 @@ async function main() {
       data: {
         name: 'Crispy Tofu Buddha Bowl',
         nameZh: '脆皮豆腐佛缽',
-        description: 'Crispy sesame tofu with brown rice, roasted sweet potato, avocado, and tahini dressing',
+        description:
+          'Crispy sesame tofu with brown rice, roasted sweet potato, avocado, and tahini dressing',
         category: MealCategory.PROTEIN_SIDES,
         price: 16.99,
-        imageUrl: '/images/meals/crispy-tofu-buddha-bowl.jpg',
+        imageUrl:
+          'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&h=600&fit=crop&crop=center',
         imageAlt: 'Crispy tofu buddha bowl with vegetables and tahini',
         calories: 450,
         protein: 20.8,
@@ -325,24 +371,29 @@ async function main() {
 
   // Create weekly menu
   console.log('📅 Creating weekly menu...')
-  const weekStart = new Date('2024-01-15') // Monday
-  const weekEnd = new Date('2024-01-21')   // Sunday
-  
+  const now = new Date()
+  const weekStart = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() - now.getDay() + 1
+  ) // Current Monday
+  const weekEnd = new Date(weekStart.getTime() + 6 * 24 * 60 * 60 * 1000) // Current Sunday
+
   const weeklyMenu = await prisma.weeklyMenu.create({
     data: {
-      name: 'Week of January 15-21, 2024',
+      name: `Week of ${weekStart.toLocaleDateString()} - ${weekEnd.toLocaleDateString()}`,
       weekStart,
       weekEnd,
       isActive: true,
       isPublished: true,
-      publishedAt: new Date('2024-01-11T17:00:00Z'), // Published Thursday 5PM
+      publishedAt: new Date(), // Published now
     },
   })
 
   // Add all meals to the weekly menu
   console.log('🍽️ Adding meals to weekly menu...')
   await Promise.all(
-    meals.map((meal) =>
+    meals.map(meal =>
       prisma.weeklyMenuItem.create({
         data: {
           weeklyMenuId: weeklyMenu.id,
@@ -356,8 +407,8 @@ async function main() {
 
   // Create a test order
   console.log('📦 Creating test order...')
-  const orderNumber = 'FB24011500001'
-  
+  const orderNumber = `FB${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}${String(new Date().getDate()).padStart(2, '0')}00001`
+
   const testOrder = await prisma.order.create({
     data: {
       orderNumber,
@@ -369,7 +420,7 @@ async function main() {
       tax: 7.79,
       finalAmount: 68.75,
       addressId: testAddress.id,
-      deliveryDate: new Date('2024-01-21T17:30:00Z'), // Sunday delivery
+      deliveryDate: weekEnd, // Sunday delivery (this week's Sunday)
       deliveryWindow: '5:30-10:00 PM',
       deliveryNotes: 'Please leave at the front door if no answer',
       needsInsulatedBag: true,
@@ -426,7 +477,7 @@ async function main() {
   console.log('✅ Created test order:', testOrder.orderNumber)
 
   console.log('🎉 Database seeding completed successfully!')
-  
+
   // Print summary
   console.log('\n📊 Seed Summary:')
   console.log('- Users: 2 (1 admin, 1 customer)')
@@ -440,7 +491,7 @@ async function main() {
 }
 
 main()
-  .catch((e) => {
+  .catch(e => {
     console.error('❌ Error during seeding:', e)
     process.exit(1)
   })

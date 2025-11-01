@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,28 +7,259 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ============================================================================
-// MVP PHASE 1 ENTITIES - Core 7 entities for basic ordering system
-// ============================================================================
-
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String   // bcrypt hashed
-  firstName String?
-  lastName  String?
-  phone     String?  // For delivery contact
-  role      UserRole @default(CUSTOMER)
-
-  // Timestamps
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // MVP Relations (simplified)
-  addresses Address[]
-  orders    Order[] // One-time orders only for MVP
+  id            String         @id @default(cuid())
+  email         String         @unique
+  password      String
+  firstName     String?
+  lastName      String?
+  phone         String?
+  role          UserRole       @default(CUSTOMER)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  addresses     Address[]
+  cartItems     CartItem[]
+  orders        Order[]
+  subscriptions Subscription[]
 
   @@map("users")
+}
+
+model Address {
+  id           String   @id @default(cuid())
+  userId       String
+  name         String?
+  streetLine1  String
+  streetLine2  String?
+  city         String
+  province     String
+  postalCode   String
+  instructions String?
+  deliveryZone String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders       Order[]
+
+  @@map("addresses")
+}
+
+model Meal {
+  id              String           @id @default(cuid())
+  name            String
+  nameZh          String?
+  description     String
+  category        MealCategory
+  imageUrl        String?
+  imageAlt        String?
+  price           Decimal          @db.Decimal(10, 2)
+  calories        Int?
+  protein         Float?
+  carbs           Float?
+  fat             Float?
+  fiber           Float?
+  sugar           Float?
+  sodium          Float?
+  allergens       String[]
+  isVegetarian    Boolean          @default(false)
+  isVegan         Boolean          @default(false)
+  isGlutenFree    Boolean          @default(false)
+  isDairyFree     Boolean          @default(false)
+  chefName        String?
+  chefInfo        String?
+  isActive        Boolean          @default(true)
+  inventory       Int              @default(0)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  cartItems       CartItem[]
+  mealSelections  MealSelection[]
+  orderItems      OrderItem[]
+  weeklyMenuItems WeeklyMenuItem[]
+
+  @@map("meals")
+}
+
+model WeeklyMenu {
+  id          String           @id @default(cuid())
+  name        String
+  weekStart   DateTime
+  weekEnd     DateTime
+  isActive    Boolean          @default(false)
+  isPublished Boolean          @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  menuItems   WeeklyMenuItem[]
+
+  @@map("weekly_menus")
+}
+
+model WeeklyMenuItem {
+  id             String     @id @default(cuid())
+  weeklyMenuId   String
+  mealId         String
+  isAvailable    Boolean    @default(true)
+  inventoryLimit Int?
+  specialPrice   Decimal?   @db.Decimal(10, 2)
+  createdAt      DateTime   @default(now())
+  meal           Meal       @relation(fields: [mealId], references: [id])
+  weeklyMenu     WeeklyMenu @relation(fields: [weeklyMenuId], references: [id], onDelete: Cascade)
+
+  @@unique([weeklyMenuId, mealId])
+  @@map("weekly_menu_items")
+}
+
+model Order {
+  id                  String        @id @default(cuid())
+  orderNumber         String        @unique
+  userId              String?
+  status              OrderStatus   @default(PENDING)
+  orderType           OrderType     @default(ONE_TIME)
+  totalAmount         Decimal       @db.Decimal(10, 2)
+  deliveryFee         Decimal       @default(0) @db.Decimal(10, 2)
+  tax                 Decimal       @default(0) @db.Decimal(10, 2)
+  finalAmount         Decimal       @db.Decimal(10, 2)
+  addressId           String?
+  deliveryDate        DateTime
+  deliveryWindow      String
+  deliveryNotes       String?
+  customerEmail       String?
+  customerPhone       String?
+  customerName        String?
+  needsInsulatedBag   Boolean       @default(false)
+  specialInstructions String?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  bundlePriceId       String?
+  subscriptionId      String?
+  orderItems          OrderItem[]
+  address             Address?      @relation(fields: [addressId], references: [id])
+  bundlePrice         BundlePrice?  @relation("BundleOrders", fields: [bundlePriceId], references: [id])
+  subscription        Subscription? @relation("SubscriptionOrders", fields: [subscriptionId], references: [id])
+  user                User?         @relation(fields: [userId], references: [id])
+  payments            Payment[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id         String   @id @default(cuid())
+  orderId    String
+  mealId     String
+  quantity   Int
+  unitPrice  Decimal  @db.Decimal(10, 2)
+  totalPrice Decimal  @db.Decimal(10, 2)
+  mealName   String
+  mealNameZh String?
+  createdAt  DateTime @default(now())
+  meal       Meal     @relation(fields: [mealId], references: [id])
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("order_items")
+}
+
+model DeliveryZone {
+  id             String   @id @default(cuid())
+  name           String
+  postalCodeList String[]
+  isActive       Boolean  @default(true)
+  deliveryFee    Decimal  @db.Decimal(10, 2)
+  deliveryDays   String[]
+  maxOrders      Int?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("delivery_zones")
+}
+
+model Payment {
+  id                    String        @id @default(cuid())
+  orderId               String
+  amount                Decimal       @db.Decimal(10, 2)
+  currency              String        @default("CAD")
+  status                PaymentStatus @default(PENDING)
+  paymentMethod         String
+  stripePaymentIntentId String?
+  stripeClientSecret    String?
+  metadata              Json?
+  failureReason         String?
+  retryCount            Int           @default(0)
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+  order                 Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  userId    String?
+  sessionId String?
+  mealId    String
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  meal      Meal     @relation(fields: [mealId], references: [id], onDelete: Cascade)
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, mealId])
+  @@unique([sessionId, mealId])
+  @@map("cart_items")
+}
+
+model BundlePrice {
+  id                String         @id @default(cuid())
+  mealCount         Int            @unique
+  oneTimePrice      Decimal        @db.Decimal(10, 2)
+  subscriptionPrice Decimal        @db.Decimal(10, 2)
+  isActive          Boolean        @default(true)
+  description       String?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  orders            Order[]        @relation("BundleOrders")
+  subscriptions     Subscription[]
+
+  @@map("bundle_prices")
+}
+
+model Subscription {
+  id                String             @id @default(cuid())
+  userId            String
+  bundlePriceId     String
+  status            SubscriptionStatus @default(ACTIVE)
+  deliveryDay       DeliveryDay
+  billingCycle      BillingCycle       @default(WEEKLY)
+  nextBillingDate   DateTime
+  lastBillingDate   DateTime?
+  selectionDeadline DateTime
+  paymentMethodId   String?
+  pausedUntil       DateTime?
+  autoRenew         Boolean            @default(true)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  mealSelections    MealSelection[]
+  orders            Order[]            @relation("SubscriptionOrders")
+  bundlePrice       BundlePrice        @relation(fields: [bundlePriceId], references: [id])
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
+}
+
+model MealSelection {
+  id             String       @id @default(cuid())
+  subscriptionId String
+  weekStart      DateTime
+  mealId         String
+  quantity       Int          @default(1)
+  isAutoSelected Boolean      @default(false)
+  selectedAt     DateTime     @default(now())
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  meal           Meal         @relation(fields: [mealId], references: [id])
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@unique([subscriptionId, weekStart, mealId])
+  @@map("meal_selections")
 }
 
 enum UserRole {
@@ -39,170 +267,11 @@ enum UserRole {
   ADMIN
 }
 
-model Address {
-  id           String  @id @default(cuid())
-  userId       String
-  name         String? // "Home", "Office", etc.
-  streetLine1  String
-  streetLine2  String?
-  city         String
-  province     String  // Must be "BC" for Greater Vancouver Area
-  postalCode   String  // Canadian format: A1A 1A1
-  instructions String? // Delivery instructions
-
-  // Calculated fields
-  deliveryZone String? // Calculated from postal code
-
-  // Timestamps
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relations
-  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  orders Order[]
-
-  @@map("addresses")
-}
-
-model Meal {
-  id          String      @id @default(cuid())
-  name        String      // English name
-  nameZh      String?     // Chinese characters
-  description String
-  category    MealCategory
-  
-  // Media
-  imageUrl String?
-  imageAlt String?
-  
-  // Pricing
-  price Decimal @db.Decimal(10, 2)
-  
-  // Nutritional information
-  calories     Int?
-  protein      Float? // grams
-  carbs        Float? // grams
-  fat          Float? // grams
-  fiber        Float? // grams
-  sugar        Float? // grams
-  sodium       Float? // mg
-  
-  // Allergen information
-  allergens     String[] // ["nuts", "dairy", "gluten", etc.]
-  isVegetarian  Boolean  @default(false)
-  isVegan       Boolean  @default(false)
-  isGlutenFree  Boolean  @default(false)
-  isDairyFree   Boolean  @default(false)
-  
-  // Chef information
-  chefName    String?
-  chefInfo    String?
-  
-  // Operational
-  isActive    Boolean @default(true)
-  inventory   Int     @default(0)
-  
-  // Timestamps
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  // Relations
-  weeklyMenuItems WeeklyMenuItem[]
-  orderItems      OrderItem[]
-
-  @@map("meals")
-}
-
 enum MealCategory {
-  RICE_BASED    // Category A
-  NOODLE_SOUPS  // Category B
-  PASTA_FUSION  // Category C
-  PROTEIN_SIDES // Category D
-}
-
-model WeeklyMenu {
-  id          String    @id @default(cuid())
-  name        String    // "Week of Jan 15-21, 2024"
-  weekStart   DateTime  // Monday of the week
-  weekEnd     DateTime  // Sunday of the week
-  isActive    Boolean   @default(false)
-  isPublished Boolean   @default(false)
-  
-  // Publishing schedule
-  publishedAt DateTime? // Thursday at 5:00 PM
-  
-  // Timestamps
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  // Relations
-  menuItems WeeklyMenuItem[]
-
-  @@map("weekly_menus")
-}
-
-model WeeklyMenuItem {
-  id           String @id @default(cuid())
-  weeklyMenuId String
-  mealId       String
-  
-  // Availability
-  isAvailable    Boolean @default(true)
-  inventoryLimit Int?    // Override meal inventory for this week
-  
-  // Special pricing
-  specialPrice Decimal? @db.Decimal(10, 2) // Override meal price if needed
-  
-  // Timestamps
-  createdAt DateTime @default(now())
-  
-  // Relations
-  weeklyMenu WeeklyMenu @relation(fields: [weeklyMenuId], references: [id], onDelete: Cascade)
-  meal       Meal       @relation(fields: [mealId], references: [id])
-
-  @@unique([weeklyMenuId, mealId])
-  @@map("weekly_menu_items")
-}
-
-model Order {
-  id           String      @id @default(cuid())
-  orderNumber  String      @unique // User-friendly order number
-  userId       String?     // Null for guest checkout
-  
-  // Order details
-  status       OrderStatus @default(PENDING)
-  orderType    OrderType   @default(ONE_TIME) // Only ONE_TIME for MVP
-  totalAmount  Decimal     @db.Decimal(10, 2)
-  deliveryFee  Decimal     @db.Decimal(10, 2) @default(0)
-  tax          Decimal     @db.Decimal(10, 2) @default(0)
-  finalAmount  Decimal     @db.Decimal(10, 2)
-  
-  // Delivery information
-  addressId       String?
-  deliveryDate    DateTime
-  deliveryWindow  String    // "5:30-10:00 PM"
-  deliveryNotes   String?
-  
-  // Customer information (for guest checkout)
-  customerEmail String?
-  customerPhone String?
-  customerName  String?
-  
-  // Special requirements
-  needsInsulatedBag Boolean @default(false) // For 5+ meals
-  specialInstructions String?
-  
-  // Timestamps
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  // Relations
-  user       User?       @relation(fields: [userId], references: [id])
-  address    Address?    @relation(fields: [addressId], references: [id])
-  orderItems OrderItem[]
-  payments   Payment[]
-
-  @@map("orders")
+  RICE_BASED
+  NOODLE_SOUPS
+  PASTA_FUSION
+  PROTEIN_SIDES
 }
 
 enum OrderStatus {
@@ -215,82 +284,8 @@ enum OrderStatus {
 }
 
 enum OrderType {
-  ONE_TIME // Only type for MVP Phase 1
-}
-
-model OrderItem {
-  id        String  @id @default(cuid())
-  orderId   String
-  mealId    String
-  
-  // Item details
-  quantity   Int
-  unitPrice  Decimal @db.Decimal(10, 2)
-  totalPrice Decimal @db.Decimal(10, 2)
-  
-  // Snapshot data (in case meal changes)
-  mealName   String
-  mealNameZh String?
-  
-  // Timestamps
-  createdAt DateTime @default(now())
-  
-  // Relations
-  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  meal  Meal  @relation(fields: [mealId], references: [id])
-
-  @@map("order_items")
-}
-
-model DeliveryZone {
-  id             String  @id @default(cuid())
-  name           String  // "Downtown Vancouver", "Richmond", etc.
-  postalCodeList String[] // ["V6B", "V6C", "V6E", etc.]
-  
-  // Delivery settings
-  isActive     Boolean @default(true)
-  deliveryFee  Decimal @db.Decimal(10, 2)
-  deliveryDays String[] // ["SUNDAY", "WEDNESDAY"]
-  
-  // Operational
-  maxOrders Int? // Daily order limit for this zone
-  
-  // Timestamps
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("delivery_zones")
-}
-
-model Payment {
-  id            String        @id @default(cuid())
-  orderId       String
-  
-  // Payment details
-  amount        Decimal       @db.Decimal(10, 2)
-  currency      String        @default("CAD")
-  status        PaymentStatus @default(PENDING)
-  paymentMethod String        // "card", "email", etc.
-  
-  // Stripe integration
-  stripePaymentIntentId String?
-  stripeClientSecret    String?
-  
-  // Metadata
-  metadata Json?
-  
-  // Error handling
-  failureReason String?
-  retryCount    Int     @default(0)
-  
-  // Timestamps
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  // Relations
-  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
-
-  @@map("payments")
+  ONE_TIME
+  SUBSCRIPTION
 }
 
 enum PaymentStatus {
@@ -301,4 +296,22 @@ enum PaymentStatus {
   CANCELLED
   REFUNDED
   PARTIALLY_REFUNDED
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAUSED
+  CANCELLED
+  PENDING_CANCELLATION
+  PAYMENT_FAILED
+}
+
+enum DeliveryDay {
+  SUNDAY
+  WEDNESDAY
+}
+
+enum BillingCycle {
+  WEEKLY
+  MONTHLY
 }
