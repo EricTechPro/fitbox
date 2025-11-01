@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { hash } from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
-import { registrationSchema, AuthValidation } from '@/lib/auth-validation'
+import { AuthValidation } from '@/lib/auth-validation'
 import { SecureLogger, EnhancedRateLimiter } from '@/lib/auth-security'
-import { handleCors, addCorsHeaders, getSecurityHeaders, logCorsViolation } from '@/lib/cors-config'
+import {
+  handleCors,
+  addCorsHeaders,
+  getSecurityHeaders,
+} from '@/lib/cors-config'
 import { csrfProtection, createCSRFErrorResponse } from '@/lib/csrf-protection'
 
 /**
@@ -28,10 +32,12 @@ export async function POST(request: NextRequest) {
         metadata: {
           endpoint: 'signup',
           error: csrfResult.error,
-          origin: origin || 'unknown'
-        }
+          origin: origin || 'unknown',
+        },
       })
-      return createCSRFErrorResponse(csrfResult.error || 'CSRF validation failed')
+      return createCSRFErrorResponse(
+        csrfResult.error || 'CSRF validation failed'
+      )
     }
 
     // Parse request body
@@ -41,13 +47,13 @@ export async function POST(request: NextRequest) {
     const validation = AuthValidation.validateRegistration(body)
     if (!validation.success) {
       SecureLogger.logRegistrationAttempt(false, {
-        metadata: { error_code: 'INVALID_INPUT' }
+        metadata: { error_code: 'INVALID_INPUT' },
       })
 
       const response = NextResponse.json(
         {
           message: 'Invalid input data',
-          errors: validation.errors
+          errors: validation.errors,
         },
         { status: 400 }
       )
@@ -58,20 +64,26 @@ export async function POST(request: NextRequest) {
     const { firstName, lastName, email, phone, password } = validation.data!
 
     // Check rate limiting with enhanced rate limiter
-    const rateLimitResult = EnhancedRateLimiter.recordAttempt(email, 5, 15 * 60 * 1000) // 5 attempts per 15 minutes
+    const rateLimitResult = EnhancedRateLimiter.recordAttempt(
+      email,
+      5,
+      15 * 60 * 1000
+    ) // 5 attempts per 15 minutes
 
     if (rateLimitResult.isLimited) {
       SecureLogger.logSecurityEvent({
         type: 'RATE_LIMITED',
         email,
         timestamp: new Date(),
-        metadata: { endpoint: 'signup' }
+        metadata: { endpoint: 'signup' },
       })
 
       const response = NextResponse.json(
         {
           message: 'Too many registration attempts. Please try again later.',
-          retryAfter: Math.ceil(EnhancedRateLimiter.getRemainingTime(email) / 1000)
+          retryAfter: Math.ceil(
+            EnhancedRateLimiter.getRemainingTime(email) / 1000
+          ),
         },
         { status: 429 }
       )
@@ -82,13 +94,13 @@ export async function POST(request: NextRequest) {
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
       where: { email },
-      select: { id: true, email: true }
+      select: { id: true, email: true },
     })
 
     if (existingUser) {
       SecureLogger.logRegistrationAttempt(false, {
         email,
-        metadata: { error_code: 'USER_EXISTS' }
+        metadata: { error_code: 'USER_EXISTS' },
       })
 
       const response = NextResponse.json(
@@ -106,21 +118,22 @@ export async function POST(request: NextRequest) {
     const recentUsersCount = await prisma.user.count({
       where: {
         createdAt: {
-          gte: oneWeekAgo
-        }
-      }
+          gte: oneWeekAgo,
+        },
+      },
     })
 
     if (recentUsersCount >= 10) {
       SecureLogger.logRegistrationAttempt(false, {
         email,
-        metadata: { error_code: 'BETA_LIMIT_REACHED' }
+        metadata: { error_code: 'BETA_LIMIT_REACHED' },
       })
 
       const response = NextResponse.json(
         {
-          message: 'Beta registration limit reached. We are currently limiting signups to 10 new customers per week. Please try again next week.',
-          code: 'BETA_LIMIT_REACHED'
+          message:
+            'Beta registration limit reached. We are currently limiting signups to 10 new customers per week. Please try again next week.',
+          code: 'BETA_LIMIT_REACHED',
         },
         { status: 429 }
       )
@@ -140,7 +153,6 @@ export async function POST(request: NextRequest) {
         phone: phone || null,
         password: hashedPassword,
         role: 'CUSTOMER',
-        name: `${firstName} ${lastName}`,
       },
       select: {
         id: true,
@@ -148,14 +160,14 @@ export async function POST(request: NextRequest) {
         firstName: true,
         lastName: true,
         role: true,
-        createdAt: true
-      }
+        createdAt: true,
+      },
     })
 
     // Log successful registration
     SecureLogger.logRegistrationAttempt(true, {
       userId: user.id,
-      email: user.email
+      email: user.email,
     })
 
     const response = NextResponse.json(
@@ -166,20 +178,19 @@ export async function POST(request: NextRequest) {
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
-          role: user.role
-        }
+          role: user.role,
+        },
       },
       {
         status: 201,
-        headers: getSecurityHeaders()
+        headers: getSecurityHeaders(),
       }
     )
 
     return addCorsHeaders(response, origin)
-
   } catch (error) {
     SecureLogger.logRegistrationAttempt(false, {
-      metadata: { error_code: 'SYSTEM_ERROR' }
+      metadata: { error_code: 'SYSTEM_ERROR' },
     })
 
     // Handle Prisma specific errors
@@ -231,7 +242,7 @@ export async function OPTIONS(request: NextRequest) {
 
     return new NextResponse(null, {
       status: 403,
-      statusText: 'Forbidden'
+      statusText: 'Forbidden',
     })
   }
 

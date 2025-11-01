@@ -1,43 +1,43 @@
-import { NextAuthOptions } from "next-auth"
-import type { Provider } from "next-auth/providers/index"
-import { PrismaAdapter } from "@next-auth/prisma-adapter"
-import CredentialsProvider from "next-auth/providers/credentials"
-import EmailProvider from "next-auth/providers/email"
-import { compare } from "bcryptjs"
-import { prisma } from "@/lib/prisma"
-import { credentialsSchema, emailOnlySchema } from "@/lib/auth-validation"
+import type { Provider } from 'next-auth/providers/index'
+import { PrismaAdapter } from '@next-auth/prisma-adapter'
+import CredentialsProvider from 'next-auth/providers/credentials'
+import EmailProvider from 'next-auth/providers/email'
+import { compare } from 'bcryptjs'
+import { prisma } from '@/lib/prisma'
+import { credentialsSchema } from '@/lib/auth-validation'
 import {
   SecureLogger,
   AccountLockout,
-  TimingProtection
-} from "@/lib/auth-security"
-import { AUTH_CONSTANTS } from "@/lib/constants"
+  TimingProtection,
+} from '@/lib/auth-security'
+import { AUTH_CONSTANTS } from '@/lib/constants'
 
 /**
  * Enhanced Credentials Provider with validation and security
  */
 const credentialsProvider = CredentialsProvider({
   id: AUTH_CONSTANTS.PROVIDERS.CREDENTIALS,
-  name: "Email and Password",
+  name: 'Email and Password',
   credentials: {
     email: {
-      label: "Email",
-      type: "email",
-      placeholder: "your@email.com"
+      label: 'Email',
+      type: 'email',
+      placeholder: 'your@email.com',
     },
     password: {
-      label: "Password",
-      type: "password",
-      placeholder: "Enter your password"
-    }
+      label: 'Password',
+      type: 'password',
+      placeholder: 'Enter your password',
+    },
   },
-  async authorize(credentials, req) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  async authorize(credentials, _req) {
     return await TimingProtection.ensureMinimumTime(async () => {
       try {
         // Validate input format
         if (!credentials?.email || !credentials?.password) {
           SecureLogger.logAuthAttempt(false, {
-            metadata: { error_code: 'MISSING_CREDENTIALS' }
+            metadata: { error_code: 'MISSING_CREDENTIALS' },
           })
           return null
         }
@@ -47,7 +47,7 @@ const credentialsProvider = CredentialsProvider({
         if (!validation.success) {
           SecureLogger.logAuthAttempt(false, {
             email: credentials.email,
-            metadata: { error_code: 'INVALID_FORMAT' }
+            metadata: { error_code: 'INVALID_FORMAT' },
           })
           return null
         }
@@ -58,7 +58,7 @@ const credentialsProvider = CredentialsProvider({
         if (AccountLockout.isLocked(email)) {
           SecureLogger.logAuthAttempt(false, {
             email,
-            metadata: { error_code: 'ACCOUNT_LOCKED' }
+            metadata: { error_code: 'ACCOUNT_LOCKED' },
           })
           return null
         }
@@ -66,7 +66,7 @@ const credentialsProvider = CredentialsProvider({
         // Find user in database
         const user = await prisma.user.findUnique({
           where: {
-            email: email.toLowerCase()
+            email: email.toLowerCase(),
           },
           select: {
             id: true,
@@ -75,13 +75,14 @@ const credentialsProvider = CredentialsProvider({
             firstName: true,
             lastName: true,
             role: true,
-            createdAt: true
-          }
+            createdAt: true,
+          },
         })
 
         // Always perform password comparison to prevent timing attacks
         const providedPassword = password
-        const storedPassword = user?.password || '$2a$12$dummy.hash.to.prevent.timing.attacks'
+        const storedPassword =
+          user?.password || '$2a$12$dummy.hash.to.prevent.timing.attacks'
 
         const isPasswordValid = await compare(providedPassword, storedPassword)
 
@@ -90,7 +91,7 @@ const credentialsProvider = CredentialsProvider({
           AccountLockout.recordFailedAttempt(email)
           SecureLogger.logAuthAttempt(false, {
             email,
-            metadata: { error_code: 'AUTHENTICATION_FAILED' }
+            metadata: { error_code: 'AUTHENTICATION_FAILED' },
           })
           return null
         }
@@ -99,7 +100,7 @@ const credentialsProvider = CredentialsProvider({
         AccountLockout.recordSuccessfulAttempt(email)
         SecureLogger.logAuthAttempt(true, {
           userId: user.id,
-          email: user.email
+          email: user.email,
         })
 
         // Return user object for session
@@ -109,20 +110,21 @@ const credentialsProvider = CredentialsProvider({
           firstName: user.firstName,
           lastName: user.lastName,
           role: user.role,
-          name: user.firstName && user.lastName
-            ? `${user.firstName} ${user.lastName}`
-            : user.firstName || user.lastName || user.email
+          name:
+            user.firstName && user.lastName
+              ? `${user.firstName} ${user.lastName}`
+              : user.firstName || user.lastName || user.email,
         }
       } catch (error) {
         SecureLogger.logSecurityEvent({
           type: 'AUTH_FAILURE',
           timestamp: new Date(),
-          metadata: { error_code: 'SYSTEM_ERROR' }
+          metadata: { error_code: 'SYSTEM_ERROR' },
         })
         return null
       }
     }, AUTH_CONSTANTS.SECURITY.TIMING_ATTACK_PROTECTION_MS) // Minimum time to prevent timing attacks
-  }
+  },
 })
 
 /**
@@ -131,19 +133,21 @@ const credentialsProvider = CredentialsProvider({
 const emailProvider = EmailProvider({
   server: {
     host: process.env.EMAIL_SERVER_HOST,
-    port: parseInt(process.env.EMAIL_SERVER_PORT || "587"),
+    port: parseInt(process.env.EMAIL_SERVER_PORT || '587'),
     auth: {
       user: process.env.EMAIL_SERVER_USER,
       pass: process.env.EMAIL_SERVER_PASSWORD,
     },
-    secure: process.env.EMAIL_SERVER_SECURE === "true",
+    secure: process.env.EMAIL_SERVER_SECURE === 'true',
   },
   from: process.env.EMAIL_FROM,
   maxAge: 24 * 60 * 60, // 24 hours
   sendVerificationRequest: async ({ identifier, url, provider, theme }) => {
     try {
       // Import email provider functions
-      const { sendVerificationEmail, EmailRateLimiter } = await import("@/lib/email-provider")
+      const { sendVerificationEmail, EmailRateLimiter } = await import(
+        '@/lib/email-provider'
+      )
 
       // Check rate limiting before sending
       if (EmailRateLimiter.isRateLimited(identifier)) {
@@ -156,25 +160,27 @@ const emailProvider = EmailProvider({
           timestamp: new Date(),
           metadata: {
             error_code: 'EMAIL_RATE_LIMITED',
-            remaining_minutes: minutes
-          }
+            remaining_minutes: minutes,
+          },
         })
 
-        throw new Error(`Too many email requests. Please wait ${minutes} minutes before trying again.`)
+        throw new Error(
+          `Too many email requests. Please wait ${minutes} minutes before trying again.`
+        )
       }
 
       await sendVerificationEmail({
         to: identifier,
         url,
         provider,
-        theme
+        theme,
       })
 
       SecureLogger.logSecurityEvent({
         type: 'AUTH_SUCCESS',
         email: identifier,
         timestamp: new Date(),
-        metadata: { auth_method: 'email_link' }
+        metadata: { auth_method: 'email_link' },
       })
     } catch (error) {
       SecureLogger.logSecurityEvent({
@@ -183,8 +189,9 @@ const emailProvider = EmailProvider({
         timestamp: new Date(),
         metadata: {
           error_code: 'EMAIL_SEND_FAILED',
-          error_message: error instanceof Error ? error.message : 'Unknown error'
-        }
+          error_message:
+            error instanceof Error ? error.message : 'Unknown error',
+        },
       })
       throw error
     }
@@ -211,19 +218,19 @@ const enhancedAdapter = {
       }
 
       const createdUser = await prisma.user.create({
-        data: normalizedUser
+        data: normalizedUser,
       })
 
       SecureLogger.logRegistrationAttempt(true, {
         userId: createdUser.id,
-        email: createdUser.email
+        email: createdUser.email,
       })
 
       return createdUser
     } catch (error) {
       SecureLogger.logRegistrationAttempt(false, {
         email: user?.email,
-        metadata: { error_code: 'USER_CREATION_FAILED' }
+        metadata: { error_code: 'USER_CREATION_FAILED' },
       })
       throw error
     }
@@ -232,14 +239,14 @@ const enhancedAdapter = {
   async getUser(id: string) {
     try {
       return await prisma.user.findUnique({
-        where: { id }
+        where: { id },
       })
     } catch (error) {
       SecureLogger.logSecurityEvent({
         type: 'AUTH_FAILURE',
         userId: id,
         timestamp: new Date(),
-        metadata: { error_code: 'USER_FETCH_FAILED' }
+        metadata: { error_code: 'USER_FETCH_FAILED' },
       })
       return null
     }
@@ -248,46 +255,47 @@ const enhancedAdapter = {
   async getUserByEmail(email: string) {
     try {
       return await prisma.user.findUnique({
-        where: { email: email.toLowerCase() }
+        where: { email: email.toLowerCase() },
       })
     } catch (error) {
       SecureLogger.logSecurityEvent({
         type: 'AUTH_FAILURE',
         email: email,
         timestamp: new Date(),
-        metadata: { error_code: 'USER_EMAIL_FETCH_FAILED' }
+        metadata: { error_code: 'USER_EMAIL_FETCH_FAILED' },
       })
       return null
     }
   },
 
-  async getUserByAccount({ providerAccountId, provider }: any) {
-    try {
-      const account = await prisma.account.findUnique({
-        where: {
-          provider_providerAccountId: {
-            provider,
-            providerAccountId
-          }
-        },
-        include: {
-          user: true
-        }
-      })
-      return account?.user ?? null
-    } catch (error) {
-      SecureLogger.logSecurityEvent({
-        type: 'AUTH_FAILURE',
-        timestamp: new Date(),
-        metadata: {
-          error_code: 'USER_ACCOUNT_FETCH_FAILED',
-          provider,
-          providerAccountId: provider // Don't log the actual account ID
-        }
-      })
-      return null
-    }
-  }
+  // TODO: Add Account model to Prisma schema for OAuth support
+  // async getUserByAccount({ providerAccountId, provider }: any) {
+  //   try {
+  //     const account = await prisma.account.findUnique({
+  //       where: {
+  //         provider_providerAccountId: {
+  //           provider,
+  //           providerAccountId
+  //         }
+  //       },
+  //       include: {
+  //         user: true
+  //       }
+  //     })
+  //     return account?.user ?? null
+  //   } catch (error) {
+  //     SecureLogger.logSecurityEvent({
+  //       type: 'AUTH_FAILURE',
+  //       timestamp: new Date(),
+  //       metadata: {
+  //         error_code: 'USER_ACCOUNT_FETCH_FAILED',
+  //         provider,
+  //         providerAccountId: provider // Don't log the actual account ID
+  //       }
+  //     })
+  //     return null
+  //   }
+  // }
 }
 
 /**
@@ -300,7 +308,9 @@ export function createProviders(): Provider[] {
   if (process.env.EMAIL_SERVER_HOST && process.env.EMAIL_FROM) {
     providers.push(emailProvider)
   } else {
-    console.warn("Email provider not configured - missing EMAIL_SERVER_HOST or EMAIL_FROM")
+    console.warn(
+      'Email provider not configured - missing EMAIL_SERVER_HOST or EMAIL_FROM'
+    )
   }
 
   return providers
@@ -322,7 +332,7 @@ export function validateAuthEnvironment(): {
   warnings: string[]
 } {
   // Use the comprehensive validation from auth-validation.ts
-  const { validateEnvironment } = require("@/lib/auth-validation")
+  const { validateEnvironment } = require('@/lib/auth-validation')
   return validateEnvironment()
 }
 
